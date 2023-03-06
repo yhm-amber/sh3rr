@@ -4,7 +4,7 @@
 Play shells better ... 🤤
 ~~~
 
-The real three wepons: 
+The three real wepons on *SHell* : 
 
 - `exec` : the old's end, the new's begin.
 - `eval` : it will write itself by itself ...
