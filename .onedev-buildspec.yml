@@ -1,0 +1,53 @@
+version: 20
+jobs:
+- name: pusher all-branch commit
+  steps:
+  - !PushRepository
+    name: force to gh yhm-amber/sh3rr
+    remoteUrl: https://github.com/yhm-amber/sh3rr.git
+    userName: yhm-amber
+    passwordSecret: github.yhm-amber
+    withLfs: true
+    force: true
+    condition: ALWAYS
+  - !PushRepository
+    name: force to cb yhm-ypa/sh3rr
+    remoteUrl: https://codeberg.org/yhm-ypa/sh3rr.git
+    userName: yhm
+    passwordSecret: codeberg.yhm
+    withLfs: true
+    force: true
+    condition: ALWAYS
+  triggers:
+  - !BranchUpdateTrigger
+    projects: yhm-ypa/sh3rr
+  retryCondition: never
+  maxRetries: 3
+  retryDelay: 30
+  timeout: 3600
+- name: puller all-branch cron.03:20:10
+  steps:
+  - !PullRepository
+    name: from gh yhm-amber/sh3rr
+    remoteUrl: https://github.com/yhm-amber/sh3rr.git
+    syncToChildProject: false
+    refs: refs/heads/* refs/tags/*
+    withLfs: true
+    force: false
+    condition: ALWAYS
+  - !PullRepository
+    name: from cb yhm-ypa/sh3rr
+    remoteUrl: https://codeberg.org/yhm-ypa/sh3rr.git
+    syncToChildProject: false
+    refs: refs/heads/* refs/tags/*
+    withLfs: true
+    force: false
+    condition: ALWAYS
+  triggers:
+  - !ScheduleTrigger
+    cronExpression: 10 20 3 * * ?
+    projects: yhm-ypa/sh3rr
+  retryCondition: never
+  maxRetries: 3
+  retryDelay: 30
+  timeout: 3600
