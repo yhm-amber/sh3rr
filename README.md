@@ -1,6 +1,6 @@
 # sh3rr
 
-~~~ factor
+~~~ 
 Made revelation on the edge. 🦉
 ~~~
 
