@@ -1,7 +1,7 @@
 # sh3rr
 
 ~~~ factor
-Play shells better ... 🤤
+Made revelation on the edge. 🦉
 ~~~
 
 The three real wepons on *SHell* : <sup><kbd><var>来自过去的物质的三项启示：</var></kbd></sup>
