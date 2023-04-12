@@ -1,6 +1,6 @@
 export 
 const echoes = 
-(ffs: {[key: string]: (env: { [key: string]: any }) => Function})
+(ffs: {[key: string]: (env: { [key: string]: Function }) => Function})
 : {[key: string]: Function} =>
     Object.entries(ffs).reduce
     (
