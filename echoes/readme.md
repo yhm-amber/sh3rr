@@ -80,4 +80,9 @@ Echoes.call(xx,'f2')('a',3).then(r => console.log(r)); // 结果为 3
 
 在不指定泛型的情况下，（目前的）类型推导无法确定 `Promise` 的泛型，因而 `r` 必须写作 `(r: number)` 。
 
-*在本项目的建立与错误排查中，用到了基于 GPT-4 AI 的 Bing Chat 。*
+## 鸣谢
+
+在本项目的建立与错误排查中，使用了以下工具：
+
+- 基于 [GPT-4 AI](https://openai.com/research/gpt-4) 的 [Bing Chat](https://bing.com/chat) ：被用于对造成问题的可能原因的排查。
+- 以 Web Browser 为界面的 [TypeScript Playground](https://www.typescriptlang.org//play) ：被用于代码执行、测试、验证、提示，以及其它 IDE 功能。
