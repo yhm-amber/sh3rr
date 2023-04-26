@@ -54,6 +54,11 @@ Flagings ()
         eval echo \""$taker"\" &&
         : )
     
+    # seq 7 | acc=3 f='echo $((x + acc))' reduce -- x
+    # echo a,b,c:d,e,f: | fielder=, acc='' f='echo "$y .. $z .. $x ~ $acc"' reduce -d : -- x y z
+    reduce () (while IFS="${fielder:-$IFS}" read -r "${@:-p}" ; do local acc="$(eval "$f")" ; done ; echo "$acc") &&
+    
+    
     "$@" &&
     
     :;
