@@ -1,6 +1,7 @@
 
 fp ()
 (
+    # 这是高贵的换行符。
     export NLINE=$'\n' &&
     
     # seq 2 2 8 | cat -n | f='echo "$x -> $y"' fp map x y
@@ -17,9 +18,14 @@ fp ()
     # echo a,b,c:d,e,f: | fielder=, f='"$z ~ $x -> $y"' fp rdmap -d : -- y x z
     rdmap () (acc='' f='printf '"'${formatter:-%s}'"' "$acc"'"$f" reduce "$@") &&
     
+    # fp formatf "$@"
+    # formatter=' _%s' fp formatf $(seq 12)
+    # eq: f='printf \ %s _"$x"' fp map x < <(seq 12)
+    formatf () (printf "${formatter:-%s\n}" "$@") &&
+    
     "$@" &&
     
-    : )
+    : ) &&
 
 Flagings ()
 {
@@ -35,6 +41,11 @@ Flagings ()
         eval 'for '"$eacher"' in "$@" ; do eval "$raiser" ; done' &&
         
         : ) &&
+    
+    : raisef "$@"
+    : or: formatter='%s\n' raisef "$@"
+    : eq: raise "$@"
+    raisef () (printf "${formatter:-%s\n}" "$@") &&
     
     erro () (1>&2 echo "$@") &&
     lose () { erro "$@" && "${loster:-return}" "${loser:-254}" ; } &&
@@ -65,7 +76,7 @@ Flagings ()
         : : 'illya; ikuyo; bocchi'
         
         test -z "$taker" && local taker="$(cat -)" ;
-        local fields="$(seq "${fieldlen:-256}" | f='printf \ %s _"$x"' fp map x)" &&
+        local fields="$(formatter=' _%s' raisef $(seq "${fieldlen:-256}") )" &&
         
         local $fields &&
         fielder="$fielder" signer="$fields" _sign "$@" &&
