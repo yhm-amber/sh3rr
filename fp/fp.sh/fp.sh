@@ -1,5 +1,6 @@
 #! /bin/env sh
 
+
 fp ()
 (
     # 这是高贵的换行符。
@@ -19,9 +20,15 @@ fp ()
     # echo a,b,c:d,e,f: | fielder=, f='"$z ~ $x -> $y"' fp rdmap -d : -- y x z
     rdmap () (acc='' f='printf '"'${formatter:-%s}'"' "$acc"'"$f" reduce "$@") &&
     
+    # fp formatf "$@"
+    # formatter=' _%s' fp formatf $(seq 12)
+    # eq: seq 12 | f='printf \ _%s "$x"' fp map x
+    formatf () (printf "${formatter:-%s\n}" "$@") &&
+    
     "$@" &&
     
-    : )
+    : ) &&
+
 
 : \
 fp "$@"
