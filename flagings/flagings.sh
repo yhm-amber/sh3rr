@@ -1,4 +1,26 @@
 
+fp ()
+(
+    export NLINE=$'\n' &&
+    
+    # seq 2 2 8 | cat -n | f='echo "$x -> $y"' fp map x y
+    # echo a,b,c:d,e,f: | fielder=, f='echo "$z ~ $x -> $y"' fp map -d : -- y x z
+    map () (while IFS="${fielder:-$IFS}" read -r "${@:-p}" ;do eval "$f";done) &&
+    
+    # seq 7 | acc=3 f='echo $((x + acc))' fp reduce -- x
+    # echo a,b,c:d,e,f: | fielder=, acc='' f='echo "$y .. $z .. $x ~ $acc"' fp reduce -d : -- x y z
+    # echo a,b,c:d,e,f: | fielder=, acc='' f='echo "$acc: $y .. $z .. $x"' fp reduce -d : -- x y z
+    reduce () (while IFS="${fielder:-$IFS}" read -r "${@:-p}" ; do local acc="$(eval "$f")${concater:-$NLINE}" ; done ; echo "$(echo "$acc")") &&
+    reducer () (while IFS="${fielder:-$IFS}" read -r "${@:-p}" ; do local acc="${concater:-$NLINE}$(eval "$f")" ; done ; echo "$(echo "$acc")") &&
+    
+    # seq 2 2 8 | cat -n | f='"$x -> $y"' fp rdmap x y
+    # echo a,b,c:d,e,f: | fielder=, f='"$z ~ $x -> $y"' fp rdmap -d : -- y x z
+    rdmap () (acc='' f='printf '"'${formatter:-%s}'"' "$acc"'"$f" reduce "$@") &&
+    
+    "$@" &&
+    
+    : )
+
 Flagings ()
 {
     
@@ -36,27 +58,20 @@ Flagings ()
         
     } &&
     
-    # seq 2 2 8 | cat -n | f='echo "$x -> $y"' map x y
-    # echo a,b,c:d,e,f: | fielder=, f='echo "$z ~ $x -> $y"' map -d : -- y x z
-    map () (while IFS="${fielder:-$IFS}" read -r "${@:-p}" ;do eval "$f";done) &&
     
     take ()
     (
-        : fielder=, taker='$_1; $_4; $_3' take illya,,bocchi,ikuyo,kitta,eula,,
+        : fielder=, taker='echo "$_1; $_4; $_3"' take illya,,bocchi,ikuyo,kitta,eula,,
         : : 'illya; ikuyo; bocchi'
         
         test -z "$taker" && local taker="$(cat -)" ;
-        local fields="$(seq "${fieldlen:-256}" | f='printf \ %s _"$x"' map x)" &&
+        local fields="$(seq "${fieldlen:-256}" | f='printf \ %s _"$x"' fp map x)" &&
         
         local $fields &&
         fielder="$fielder" signer="$fields" _sign "$@" &&
         
-        eval echo \""$taker"\" &&
+        eval "$taker" &&
         : )
-    
-    # seq 7 | acc=3 f='echo $((x + acc))' reduce -- x
-    # echo a,b,c:d,e,f: | fielder=, acc='' f='echo "$y .. $z .. $x ~ $acc"' reduce -d : -- x y z
-    reduce () (while IFS="${fielder:-$IFS}" read -r "${@:-p}" ; do local acc="$(eval "$f")" ; done ; echo "$acc") &&
     
     
     "$@" &&
