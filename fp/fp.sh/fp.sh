@@ -2,6 +2,7 @@
 
 fp ()
 (
+    # 这是高贵的换行符。
     export NLINE=$'\n' &&
     
     # seq 2 2 8 | cat -n | f='echo "$x -> $y"' fp map x y
