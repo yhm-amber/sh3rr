@@ -15,9 +15,9 @@
 [fib.wiki:fr/wikipedia.org]: https://fr.wikipedia.org/wiki/Suite_de_Fibonacci
 
 
-[wiki 🥗][fib.wiki:simple/wikipedia.org]
+[🥗 wiki][fib.wiki:simple/wikipedia.org]
 
-### TL;DR
+### *TL;DR*
 
 #### *[⚗][l.elixir:play] [Elixir][l.elixir:docs]*
 
@@ -53,7 +53,7 @@ fn n when not(n < 0) ->
 end .(13) ;
 ~~~
 
-### Tail recursion
+### *Tail recursion*
 
 #### *[⚗][l.elixir:play] [Elixir][l.elixir:docs]*
 
@@ -85,7 +85,7 @@ fib.(13) |> Enum.reverse # [ {0, 0}, {1, 1}, {2, 1}, {3, 2}, {4, 3}, {5, 5}, {6,
 ...
 
 
-### Reduce
+### *Reduce*
 
 #### *[⚗][l.elixir:play] [Elixir][l.elixir:docs]*
 
@@ -119,7 +119,7 @@ fib.(13) |> Enum.reverse # [ {0, 0}, {1, 1}, {2, 1}, {3, 2}, {4, 3}, {5, 5}, {6,
 ...
 
 
-### Stream / Lazy list / Iterator
+### *Stream / Lazy list / Iterator*
 
 #### *[⚗][l.elixir:play] [Elixir][l.elixir:docs]*
 
@@ -170,6 +170,6 @@ fib.(13) # [ {0, 0}, {1, 1}, {2, 1}, {3, 2}, {4, 3}, {5, 5}, {6, 8}, {7, 13}, {8
 [fac.wiki:en/wikipedia.org]: https://en.wikipedia.org/wiki/Factorial
 [fac.wiki:fr/wikipedia.org]: https://fr.wikipedia.org/wiki/Factorielle
 
-[wiki 🥗][fac.wiki:simple/wikipedia.org]
+[🥗 wiki][fac.wiki:simple/wikipedia.org]
 
 
