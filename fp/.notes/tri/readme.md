@@ -53,7 +53,7 @@ fib =
 fn n when not(n < 0) ->
     0 .. n
     |> Enum.reduce({[], 0, 1}, fn x, {r, y, z} -> {[{x,y} | r], z, y + z} end)
-    |> (elem 0) ;
+    |> elem 0 ;
 end ;
 
 fib.(0) |> Enum.reverse # [{0, 0}]
@@ -80,7 +80,7 @@ fun:
 fib = 
 fn n when not(n < 0) ->
     Stream.unfold({0, 0, 1}, fn {x, y, z} -> {{x,y}, {x + 1, z, y + z} } end)
-    |> Enum.take(n + 1) ;
+    |> Enum.take n+1 ;
 end ;
 
 fib.(0) # [{0, 0}]
