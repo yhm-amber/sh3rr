@@ -1,7 +1,3 @@
-[fib.wiki/zh]: https://zh.wikipedia.org/wiki/%E6%96%90%E6%B3%A2%E9%82%A3%E5%A5%91%E6%95%B0
-[fib.wiki/en]: https://en.wikipedia.org/wiki/Fibonacci_sequence
-[fib.wiki/fr]: https://fr.wikipedia.org/wiki/Suite_de_Fibonacci
-[fib.wiki/simple]: https://simple.wikipedia.org/wiki/Fibonacci_number
 
 
 # Tail recursion, Reduce, and (lazy) Iterator
@@ -10,7 +6,14 @@
 
 ## Fibonacci
 
-[🥗][fib.wiki/simple]
+[fib.wiki:simple/wikipedia.org]: https://simple.wikipedia.org/wiki/Fibonacci_number
+[fib.wiki:zh/wikipedia.org]: https://zh.wikipedia.org/wiki/%E6%96%90%E6%B3%A2%E9%82%A3%E5%A5%91%E6%95%B0
+[fib.wiki:de/wikipedia.org]: https://de.wikipedia.org/wiki/Fibonaccizahl
+[fib.wiki:en/wikipedia.org]: https://en.wikipedia.org/wiki/Fibonacci_sequence
+[fib.wiki:fr/wikipedia.org]: https://fr.wikipedia.org/wiki/Suite_de_Fibonacci
+
+
+[wiki 🥗][fib.wiki:simple/wikipedia.org]
 
 ### TL;DR
 
@@ -156,5 +159,15 @@ fib.(13) # [ {0, 0}, {1, 1}, {2, 1}, {3, 2}, {4, 3}, {5, 5}, {6, 8}, {7, 13}, {8
 #### *🥓 Scala*
 
 ...
+
+## Factorial
+
+[fac.wiki:simple/wikipedia.org]: https://simple.wikipedia.org/wiki/Factorial
+[fac.wiki:zh/wikipedia.org]: https://zh.wikipedia.org/wiki/%E9%98%B6%E4%B9%98
+[fac.wiki:de/wikipedia.org]: https://de.wikipedia.org/wiki/Fakult%C3%A4t_(Mathematik)
+[fac.wiki:en/wikipedia.org]: https://en.wikipedia.org/wiki/Factorial
+[fac.wiki:fr/wikipedia.org]: https://fr.wikipedia.org/wiki/Factorielle
+
+[wiki 🥗][fac.wiki:simple/wikipedia.org]
 
 
