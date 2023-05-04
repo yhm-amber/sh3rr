@@ -86,3 +86,36 @@ end ;
 fib.(0) # [{0, 0}]
 fib.(13) # [ {0, 0}, {1, 1}, {2, 1}, {3, 2}, {4, 3}, {5, 5}, {6, 8}, {7, 13}, {8, 21}, {9, 34}, {10, 55}, {11, 89}, {12, 144}, {13, 233} ]
 ~~~
+
+### Summing up
+
+#### *Elixir*
+
+~~~ elixir
+# tail rec
+fn n when not(n < 0) ->
+    iter = 
+    fn
+        
+        {^n, r, y, _}, _ -> [{n,y} | r] ;
+        {x, r, y, z}, i ->
+            
+            {x + 1, [{x,y} | r], z, y + z} |> i.(i) ;
+    end ;
+    
+    {0, [], 0, 1} |> iter.(iter) ;
+end .(13) |> Enum.reverse ;
+
+# reduce
+fn n when not(n < 0) ->
+    0 .. n
+    |> Enum.reduce({[], 0, 1}, fn x, {r, y, z} -> {[{x,y} | r], z, y + z} end)
+    |> elem 0 ;
+end .(13) |> Enum.reverse ;
+
+# stream / lazylist / iterator
+fn n when not(n < 0) ->
+    Stream.unfold({0, 0, 1}, fn {x, y, z} -> {{x,y}, {x + 1, z, y + z} } end)
+    |> Enum.take n+1 ;
+end .(13) ;
+~~~
