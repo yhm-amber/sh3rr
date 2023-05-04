@@ -1,3 +1,5 @@
+[l.elixir:docs]: https://elixir-lang.org/getting-started/enumerables-and-streams.html
+[l.elixir:play]: https://playground.functional-rewire.com
 
 
 # Tail recursion, Reduce, and (lazy) Iterator
@@ -17,7 +19,7 @@
 
 ### TL;DR
 
-#### *⚗ Elixir*
+#### *[⚗][l.elixir:play] [Elixir][l.elixir:docs]*
 
 ~~~ elixir
 # aim: 
@@ -53,7 +55,7 @@ end .(13) ;
 
 ### Tail recursion
 
-#### *⚗ Elixir*
+#### *[⚗][l.elixir:play] [Elixir][l.elixir:docs]*
 
 ~~~ elixir
 fib = 
@@ -85,7 +87,7 @@ fib.(13) |> Enum.reverse # [ {0, 0}, {1, 1}, {2, 1}, {3, 2}, {4, 3}, {5, 5}, {6,
 
 ### Reduce
 
-#### *⚗ Elixir*
+#### *[⚗][l.elixir:play] [Elixir][l.elixir:docs]*
 
 simple: 
 
@@ -119,7 +121,7 @@ fib.(13) |> Enum.reverse # [ {0, 0}, {1, 1}, {2, 1}, {3, 2}, {4, 3}, {5, 5}, {6,
 
 ### Stream / Lazy list / Iterator
 
-#### *⚗ Elixir*
+#### *[⚗][l.elixir:play] [Elixir][l.elixir:docs]*
 
 simple: 
 
