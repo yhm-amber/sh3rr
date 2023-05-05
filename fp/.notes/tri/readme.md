@@ -1,6 +1,18 @@
-[l.elixir:docs]: https://elixir-lang.org/getting-started/enumerables-and-streams.html
-[l.elixir:play]: https://playground.functional-rewire.com
 
+[⚗]: https://playground.functional-rewire.com
+[Elixir]: https://elixir-lang.org/getting-started/enumerables-and-streams.html
+
+[🥑]: https://www.lua.org/demo.html
+[Lua]: https://www.lua.org
+
+[🦀]: https://play.rust-lang.org
+[Rust]: https://rust-lang.org
+
+[🧊]: https://typescriptlang.org//play
+[TypeScript]: https://typescriptlang.org
+
+[🥓]: https://scastie.scala-lang.org
+[Scala]: https://scala-lang.org
 
 # Tail recursion, Reduce, and (lazy) Iterator
 
@@ -19,7 +31,7 @@
 
 ### *TL;DR*
 
-#### *[⚗][l.elixir:play] [Elixir][l.elixir:docs]*
+#### *[⚗] [Elixir]*
 
 ~~~ elixir
 # aim: 
@@ -55,7 +67,7 @@ end .(13) ;
 
 ### *Tail recursion*
 
-#### *[⚗][l.elixir:play] [Elixir][l.elixir:docs]*
+#### *[⚗] [Elixir]*
 
 ~~~ elixir
 fib = 
@@ -76,18 +88,18 @@ fib.(0) |> Enum.reverse # [{0, 0}]
 fib.(13) |> Enum.reverse # [ {0, 0}, {1, 1}, {2, 1}, {3, 2}, {4, 3}, {5, 5}, {6, 8}, {7, 13}, {8, 21}, {9, 34}, {10, 55}, {11, 89}, {12, 144}, {13, 233} ]
 ~~~
 
-#### *🦠 Lua*
+#### *[🥑] [Lua]*
 
 ...
 
-#### *🥓 Scala*
+#### *[🥓] [Scala]*
 
 ...
 
 
 ### *Reduce*
 
-#### *[⚗][l.elixir:play] [Elixir][l.elixir:docs]*
+#### *[⚗] [Elixir]*
 
 simple: 
 
@@ -110,18 +122,18 @@ fib.(0) |> Enum.reverse # [{0, 0}]
 fib.(13) |> Enum.reverse # [ {0, 0}, {1, 1}, {2, 1}, {3, 2}, {4, 3}, {5, 5}, {6, 8}, {7, 13}, {8, 21}, {9, 34}, {10, 55}, {11, 89}, {12, 144}, {13, 233} ]
 ~~~
 
-#### *🧊 TypeScript*
+#### *[🧊] [TypeScript]*
 
 ...
 
-#### *🥓 Scala*
+#### *[🥓] [Scala]*
 
 ...
 
 
 ### *Stream / Lazy list / Iterator*
 
-#### *[⚗][l.elixir:play] [Elixir][l.elixir:docs]*
+#### *[⚗] [Elixir]*
 
 simple: 
 
@@ -146,19 +158,19 @@ fib.(0) # [{0, 0}]
 fib.(13) # [ {0, 0}, {1, 1}, {2, 1}, {3, 2}, {4, 3}, {5, 5}, {6, 8}, {7, 13}, {8, 21}, {9, 34}, {10, 55}, {11, 89}, {12, 144}, {13, 233} ]
 ~~~
 
-#### *🦀 Rust*
+#### *[🦀] [Rust]*
 
 ...
 
-#### *🧊 TypeScript*
+#### *[🧊] [TypeScript]*
 
 ...
 
-#### *🦠 Lua*
+#### *[🥑] [Lua]*
 
 ...
 
-#### *🥓 Scala*
+#### *[🥓] [Scala]*
 
 ...
 
