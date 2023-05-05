@@ -3,7 +3,7 @@
 [Elixir]: https://elixir-lang.org/getting-started/enumerables-and-streams.html
 
 [🥑]: https://www.lua.org/demo.html
-[Lua]: https://www.lua.org
+[Lua]: https://www.lua.org/pil/11.3.html
 
 [🦀]: https://play.rust-lang.org
 [Rust]: https://rust-lang.org
@@ -90,11 +90,35 @@ fib.(13) |> Enum.reverse # [ {0, 0}, {1, 1}, {2, 1}, {3, 2}, {4, 3}, {5, 5}, {6,
 
 #### *[🥑] [Lua]*
 
-...
+~~~ lua
+function fib
+(n)
+    if (n < 0)
+    then error("dont less than zero") ;
+    end ;
+    
+    function iter
+    (x, y, z)
+    return
+        
+        (n ~= x) and
+        iter (x + 1, z, y + z) or y ;
+    end ;
+    
+    return iter (0,0,1) ;
+end ;
+
+= fib (0) -- 0
+= fib (13) -- 233
+
+-- 我还没整明白怎么实现 List 所以先这样。
+~~~
 
 #### *[🥓] [Scala]*
 
-...
+~~~ scala
+
+~~~
 
 
 ### *Reduce*
@@ -124,7 +148,9 @@ fib.(13) |> Enum.reverse # [ {0, 0}, {1, 1}, {2, 1}, {3, 2}, {4, 3}, {5, 5}, {6,
 
 #### *[🧊] [TypeScript]*
 
-...
+~~~ typescript
+
+~~~
 
 #### *[🥓] [Scala]*
 
