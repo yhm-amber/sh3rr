@@ -154,7 +154,19 @@ fib.(13) |> Enum.reverse # [ {0, 0}, {1, 1}, {2, 1}, {3, 2}, {4, 3}, {5, 5}, {6,
 
 #### *[🥓] [Scala]*
 
-...
+simple: 
+
+~~~ scala
+(0 to 13).foldLeft
+{
+  (List.empty[(Int, BigInt)], BigInt(0), BigInt(1))
+} { case ((r, y, z), x) => ((x, y) :: r, z, y + z) }._1.reverse
+// List((0,0), (1,1), (2,1), (3,2), (4,3), (5,5), (6,8), (7,13), (8,21), (9,34), (10,55), (11,89), (12,144), (13,233)): List[(Int, BigInt)]
+
+/* safe */
+(0 to 0).toList // List(0): List[Int] 
+(0 to -1).toList // List(): List[Int]
+~~~
 
 
 ### *Stream / Lazy list / Iterator*
@@ -175,13 +187,15 @@ fun:
 
 ~~~ elixir
 fib = 
-fn n when not(n < 0) ->
+fn n when not(n < -1) ->
     Stream.unfold({0, 0, 1}, fn {x, y, z} -> {{x,y}, {x + 1, z, y + z} } end)
     |> Enum.take n+1 ;
 end ;
 
 fib.(0) # [{0, 0}]
 fib.(13) # [ {0, 0}, {1, 1}, {2, 1}, {3, 2}, {4, 3}, {5, 5}, {6, 8}, {7, 13}, {8, 21}, {9, 34}, {10, 55}, {11, 89}, {12, 144}, {13, 233} ]
+
+fib.(-1) # []
 ~~~
 
 #### *[🦀] [Rust]*
@@ -192,13 +206,29 @@ fib.(13) # [ {0, 0}, {1, 1}, {2, 1}, {3, 2}, {4, 3}, {5, 5}, {6, 8}, {7, 13}, {8
 
 ...
 
-#### *[🥑] [Lua]*
-
-...
-
 #### *[🥓] [Scala]*
 
-...
+simple: 
+
+~~~ scala
+/* stream (scala-2.12.x) */
+
+val fibs: Stream[(Int, BigInt)] = Stream.iterate((0, BigInt(0), BigInt(1))){ case (x, y, z) => (x + 1, z, y + z) }.map{case (x, y, z) => x -> y} ;
+
+/* lazylist (scala-2.13.x) */
+
+val fibs: LazyList[(Int, BigInt)] = LazyList.iterate((0, BigInt(0), BigInt(1))){ case (x, y, z) => (x + 1, z, y + z) }.map{case (x, y, z) => x -> y} ;
+
+/* use */
+
+fibs.take(0+1).toList // List((0,0)): List[(Int, BigInt)]
+fibs.take(13+1).toList // List((0,0), (1,1), (2,1), (3,2), (4,3), (5,5), (6,8), (7,13), (8,21), (9,34), (10,55), (11,89), (12,144), (13,233)): List[(Int, BigInt)]
+
+/* safe */
+
+fibs.take(-17).toList // List(): List[(Int, BigInt)]
+fibs.take(0).toList // List(): List[(Int, BigInt)]
+~~~
 
 ## Factorial
 
