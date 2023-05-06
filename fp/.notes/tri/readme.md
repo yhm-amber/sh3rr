@@ -59,10 +59,48 @@ fn n when not(n < 0) ->
 end .(13) |> Enum.reverse ;
 
 # stream / lazylist / iterator
-fn n when not(n < 0) ->
+fn n when not(n < -1) ->
     Stream.unfold({0, 0, 1}, fn {x, y, z} -> {{x,y}, {x + 1, z, y + z} } end)
     |> Enum.take n+1 ;
 end .(13) ;
+~~~
+
+#### *[🥓] [Scala]*
+
+~~~ scala
+/**
+ * aim: 
+ * List((0,0), (1,1), (2,1), (3,2), (4,3), (5,5), (6,8), (7,13), (8,21), (9,34), (10,55), (11,89), (12,144), (13,233)): List[(Int, BigInt)]
+ */
+
+/* tailrec */
+
+// ...
+
+/* fold (means reduce) */
+((n: Int) =>
+{
+    (0 to n).foldLeft
+    {
+      (List.empty[(Int, BigInt)], BigInt(0), BigInt(1))
+    } { case ((r, y, z), x) => ((x, y) :: r, z, y + z) }._1.reverse ;
+}) (13) ;
+
+/* stream & lazylist */
+((n: Int) =>
+{
+    Stream
+        .iterate((0, BigInt(0), BigInt(1))){ case (x, y, z) => (x + 1, z, y + z) }
+        .map{ case (x, y, z) => x -> y }
+        .take(n+1).toList
+}) (13) ;
+((n: Int) =>
+{
+    LazyList
+        .iterate((0, BigInt(0), BigInt(1))){ case (x, y, z) => (x + 1, z, y + z) }
+        .map{ case (x, y, z) => x -> y }
+        .take(n+1).toList
+}) (13) ;
 ~~~
 
 ### *Tail recursion*
