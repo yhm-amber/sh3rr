@@ -1,8 +1,11 @@
 #! /bin/env sh
 
-
 fp ()
 (
+    
+    # _tuple -- x y < <(echo X Y)
+    # fielder=",$IFS" _tuple -- x y < <(echo XX, YY)
+    _tuple () { IFS="${fielder:-$IFS}" read -r "${@:-x}" ; } &&
     
     iterate () (while IFS="${fielder:-$IFS}" "$@" ; do eval "${iterator:-$f}" ; done) &&
     
@@ -14,7 +17,11 @@ fp ()
         : fmt='%x: %x\n' n=16 fib
         : mapas='"$y"' fmt='%d ' n=16 fib
         
-        fib () (_x=0 _y=0 _z=1 iterator='test "$x" -eq "'"${n:-13}"'" && break ; _x="$((x + 1))" _y="$((z))" _z="$((y + z))"' iterate eval 'x="$_x" y="$_y" z="$_z" ; printf '"'${fmt:-%d: %d\\n}'"' '"${mapas:-\"\$x\" \"\$y\"}") &&
+        fib () (_x=0 _y=0 _z=1 iterator='test "$x" -eq "'"${n:-13}"'" && break ; _x="$((x + 1))" _y="$((z))" _z="$((y + z))"' iterate eval 'x="$_x" y="$_y" z="$_z" ; printf '"'${fmt:-%d: %d\\n}'"' '"${mapas:-\"\$x\" \"\$y\"}") ;
+        
+        fib () (x=0 y=0 z=1 iterator='test "$x" -eq "'"${n:-13}"'" && break ; fielder=",$IFS" _tuple -- x y z < <(echo "$((x + 1)), $((z)), $((y + z))")' iterate eval printf "'${fmt:-%d: %d\\n}'" "${mapas:-\"\$x\" \"\$y\"}") ;
+        
+        :;
         
         "$@" &&
         
@@ -60,6 +67,7 @@ fp ()
     "$@" &&
     
     : ) &&
+
 
 : \
 fp "$@"
