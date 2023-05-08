@@ -43,7 +43,16 @@ fp ()
     Reducers ()
     {
         
-        fib () (acc= reduce x < <(seq "${n:-13}") )
+        : fib 16
+        : fib -- 2 2 32
+        : concater=':: ' fib -- 2 2 32
+        : ofs='| ' fib -- 2 2 32
+        
+        : dont: concater=' ...' fib -- 2 2 32
+        : dont: concater=',...' fib -- 2 2 32
+        : dont: ofs=': ' concater=':...' fib -- 2 2 32
+        
+        fib () (acc="0${ofs:-, }0${ofs:-, }1${ofs:-, }_" f='echo "$(fielder="${ofs:-,}$IFS" _tuple -d "${concater:-${IFS: -1}}" -- x y z _ < <(echo "$acc") ; echo "$((x + 1))${ofs:-, }$((z))${ofs:-, }$((y + z))${ofs:-, }${q}")${concater:-${IFS: -1}}${acc}"' reduce q < <(seq "$@") ) ;
         
         "$@" &&
         
