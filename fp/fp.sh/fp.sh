@@ -19,12 +19,12 @@ fp ()
         : mapas='"$y"' fmt='%d ' n=16 fib
         
         # use tmp asigns
-        fib () (_x=0 _y=0 _z=1 iterator='test "$x" -eq "'"${n:-13}"'" && break ; _x="$((x + 1))" _y="$((z))" _z="$((y + z))"' iterate eval 'x="$_x" y="$_y" z="$_z" ; printf '"'${fmt:-%d: %d\\n}'"' '"${mapas:-\"\$x\" \"\$y\"}") ;
+        fib () (_x=0 _y=0 _z=1 iterator='test "$x" -eq "'"${n:-13}"'" && break ; _x="$((x + 1))" _y="$((z))" _z="$((y + z))"' fp iterate eval 'x="$_x" y="$_y" z="$_z" ; printf '"'${fmt:-%d: %d\\n}' ${mapas:-\"\$x\" \"\$y\"}") ;
         
         # or use the _tuple
-        fib () (x=0 y=0 z=1 iterator='test "$x" -eq "'"${n:-13}"'" && break ; fielder=",$IFS" _tuple -- x y z < <(echo "$((x + 1)), $((z)), $((y + z))")' iterate eval printf "'${fmt:-%d: %d\\n}'" "${mapas:-\"\$x\" \"\$y\"}") ;
+        fib () (x=0 y=0 z=1 iterator='test "$x" -eq "'"${n:-13}"'" && break ; fielder=",$IFS" _tuple -- x y z < <(echo "$((x + 1)), $((z)), $((y + z))")' fp iterate eval printf "'${fmt:-%d: %d\\n}' ${mapas:-\"\$x\" \"\$y\"}") ;
         
-        # fmt='%i %i, ' n=13 fp Iterators fib
+        # fmt='%i %i, ' n=13 fib
         # 0 0, 1 1, 2 1, 3 2, 4 3, 5 5, 6 8, 7 13, 8 21, 9 34, 10 55, 11 89, 12 144, 13 233, 
         
         :;
@@ -67,7 +67,7 @@ fp ()
         
         fib () (acc="0${ofs:-, }0${ofs:-, }1${ofs:-, }_" f='echo "$(fielder="${ofs:-,}$IFS" _tuple -d "${concater:-${IFS: -1}}" -- x y z _ < <(echo "$acc") ; echo "$((x + 1))${ofs:-, }$((z))${ofs:-, }$((y + z))${ofs:-, }${q}")${concater:-${IFS: -1}}${acc}"' reduce q < <(seq "$@") ) ;
         
-        # ofs=' ' fp Reducers fib 13 | f='"$x $y"' fp map -- x y _ _ | tac | f='printf "%s, " "$x $y"' fp per -- x y
+        # ofs=' ' fib 13 | f='"$x $y"' fp map -- x y _ _ | tac | f='printf "%s, " "$x $y"' fp per -- x y
         # 0 0, 1 1, 2 1, 3 2, 4 3, 5 5, 6 8, 7 13, 8 21, 9 34, 10 55, 11 89, 12 144, 13 233, 
         
         :;
