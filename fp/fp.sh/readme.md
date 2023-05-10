@@ -5,6 +5,9 @@
 😈 Just using basic feature of SHell, and pass the tests on the `ash`. 🥗
 ~~~
 
+一个仅基于基本 SHell 特性的 Functional Programming 工具集。
+在 Alpine Ash SHell 通过测试。
+
 ## Thanks for
 
 - [you-dont-need/You-Dont-Need-Loops: Avoid The One-off Problem, Infinite Loops, Statefulness and Hidden intent.](https://github.com/you-dont-need/You-Dont-Need-Loops)
