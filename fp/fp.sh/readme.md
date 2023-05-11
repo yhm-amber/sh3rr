@@ -10,8 +10,7 @@
 
 ## Thanks for
 
-- [You Dont Need Loops](https://github.com/you-dont-need/You-Dont-Need-Loops) to give me ideas
-- [We all know iter is faster than loop but why](https://users.rust-lang.org/t/we-all-know-iter-is-faster-than-loop-but-why) to give me meanings
+- [you-dont-need/You-Dont-Need-Loops: Avoid The One-off Problem, Infinite Loops, Statefulness and Hidden intent.](https://github.com/you-dont-need/You-Dont-Need-Loops)
 
 ## Playings
 
@@ -259,6 +258,10 @@ ofs=' ' concater=$'\n:;;:' repeater=3 fp repeat AA BBB CCCC
 *also see the Fibonacci ...*
 
 
+
+## See also
+
+- [We all know `iter` is faster than `loop`, but why? | The Rust Programming Language Forum](https://users.rust-lang.org/t/we-all-know-iter-is-faster-than-loop-but-why)
 
 
 
