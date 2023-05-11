@@ -14,6 +14,8 @@
 
 ## Playings
 
+使用例
+
 ### Fibonacci
 
 *iterator style :*
@@ -118,6 +120,8 @@ returner='printf "%s, " "$x $y"' n=13 fib
 ~~~
 
 ## Funcs
+
+简介
 
 ### `Tuple`
 
