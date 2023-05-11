@@ -16,6 +16,9 @@ fp ()
     # eq: seq 12 | f='printf \ _%s "$x"' fp per x
     formatf () (printf "${formatter:-%s\n}" "$@") &&
     
+    # erro echo xxx
+    # erro fp formatf "$@"
+    erro () (1>&2 "$@") &&
     
     iterate () (eval "$past" && while IFS="${fielder:-$IFS}" "$@" ; do eval "${iterator:-$f}" ; done && eval "$future") &&
     
@@ -82,10 +85,8 @@ fp ()
     # echo a,b,c:d,e,f: | fielder=, acc='' f='echo "$y .. $z .. $x ~ $acc"' fp reduce -d : -- x y z
     # echo a,b,c:d,e,f: | fielder=, acc='' f='echo "$acc: $y .. $z .. $x"' fp reduce -d : -- x y z
     
-    # reduce () (while IFS="${fielder:-$IFS}" read -r "${@:-p}" ; do local acc="$(eval "$f")${concater:-${IFS: -1}}" ; done ; trim "$acc") &&
-    # r_reduce () (while IFS="${fielder:-$IFS}" read -r "${@:-p}" ; do local acc="${concater:-${IFS: -1}}$(eval "$f")" ; done ; trim "$acc") &&
-    reduce () (concater="${concater:-${IFS: -1}}" f="$f" acc="${acc}${concater}" p='local acc="$(eval "$f")${concater}"' future='trim "$acc"' per "$@") &&
-    rwreduce () (concater="${concater:-${IFS: -1}}" f="$f" acc="${concater}${acc}" p='local acc="${concater}$(eval "$f")"' future='trim "$acc"' per "$@") &&
+    # reduce () (while IFS="${fielder:-$IFS}" read -r "${@:-p}" ; do local acc="${preconcater:-${IFS: -1}}$(eval "$f")${concater:-${IFS: -1}}" ; done ; trim "$acc") &&
+    reduce () (concater="${concater:-${IFS: -1}}" preconcater="${preconcater}" acc="${preconcater}${acc}${concater}" f="$f" p='local acc="${preconcater}$(eval "$f")${concater}"' future='trim "$acc"' per "$@") &&
     
     
     Reducers ()
@@ -137,8 +138,8 @@ fp ()
     # ofs=' ' concater=$'\n:;;:' repeater=3 fp repeat AA BBB CCCC
     repeat () (formatf "$@" | f='"'"$(echo $(concater="${ofs:-$concater}" f='"\$str"' map _ < <(seq "${repeater:-3}") ) )"'"' map str) &&
     
-    # init='0 0 1' initer='Tuple -- x y z < <(echo "$init") && echo "$x $y $z"' unfolder=' { Tuple -- x y z < <(echo "$((x + 1)) $((z)) $((y + z))") && echo "$x $y $z" ; } ' delimiter=' &&' ender=: fp unfold seq 13
-    unfold () ("$@" | f="'${unfolder}'" map _ | acc="$initer" concater="${delimiter:-$concater}" f='echo "${acc} ${processes}"' reduce -- processes | init="$init" eval "$(cat -) ${ender:-:}") &&
+    # n=13 initer='0 0 1' init='Tuple -- x y z < <(echo "$initer") && echo "$x $y $z"' unfolder=' { Tuple -- x y z < <(echo "$((x + 1)) $((z)) $((y + z))") && echo "$x $y $z" ; } ' folder='echo "${acc} ${processes}"' delimiter=' &&' fp unfold eval 'eval "$(cat -) :"'
+    unfold () (seq -- "${n:-13}" | f="'$unfolder'" map _ | acc="$init" concater="${delimiter:-$concater}" f="${folder:-echo \"\$acc \$processes\"}" reduce -- processes | initer="$initer" "$@") &&
     
     UnFolders ()
     {
@@ -149,20 +150,42 @@ fp ()
         #     acc='Tuple -- x y z < <(echo "$init") && echo "$x $y $z"' f='echo "${acc} ${processes}"' concater=' &&' fp reduce -- processes |
         #     init='0 0 1' eval "$(cat -) :"
         
-        : outer='printf "%s, " "$x $y"' n=16 fib
+        : echoer='printf "%s, " "$x $y"' n=16 fib
         
         fib ()
         (
-            outer="${outer:-echo \"\$x \$y \$z\"}" \
-            init='0 0 1' initer='Tuple -- x y z < <(echo "$init") && '"$outer" \
-            unfolder=' { Tuple -- x y z < <(echo "$((x + 1)) $((z)) $((y + z))") && '"$outer"' ; } ' \
-            delimiter=' &&' ender=: \
-            fp unfold seq "${n:-13}" &&
+            n="${n}" echoer="${echoer:-echo \"\$x \$y \$z\"}" \
+            init='Tuple -- x y z < <(echo "$initer") && '"$echoer" \
+            unfolder=' { Tuple -- x y z < <(echo "$((x + 1)) $((z)) $((y + z))") && '"$echoer"' ; } ' \
+            folder='echo "${acc} ${processes}"' delimiter=' &&' \
+            initer='0 0 1' fp unfold eval 'eval "$(cat -) :"' &&
             
             : ) ;
         
-        # outer='printf "%s, " "$x $y"' n=13 fib
+        # echoer='printf "%s, " "$x $y"' n=13 fib
         # 0 0, 1 1, 2 1, 3 2, 4 3, 5 5, 6 8, 7 13, 8 21, 9 34, 10 55, 11 89, 12 144, 13 233, 
+        
+        
+        # or you wana direct ? then you need a folder by yourself, with your unfolder.
+        
+        # seq 13 |
+        #     f="'"' { Tuple -- x y z < <(echo "$((x + 1)) $((z)) $((y + z))") && echo "$x $y $z" ; } '"'" fp map _ |
+        #     acc='0 0 1' f='Tuple -- x y z < <(echo "$acc") && erro echo "$x $y $z" && eval "$processes"' fp reduce -- processes
+        
+        fib ()
+        (
+            n="${n}" echoer='echo "$x $y $z"' init='0 0 1' returner="${returner:-$echoer}" \
+            unfolder=' { Tuple -- x y z < <(echo "$((x + 1)) $((z)) $((y + z))") && '"$echoer"' ; } ' \
+            folder='Tuple -- x y z < <(echo "$acc") && erro '"$returner"' && eval "$processes"' \
+            fp unfold cat - | f="$returner" fp per -- x y z &&
+            
+            : ) ;
+        
+        # returner='printf "%s, " "$x $y"' n=13 fib
+        # 0 0, 1 1, 2 1, 3 2, 4 3, 5 5, 6 8, 7 13, 8 21, 9 34, 10 55, 11 89, 12 144, 13 233, 
+        
+        # attention: only last one is stdout, other all before it both are stderr.
+        
         
         :;
         
