@@ -67,7 +67,7 @@ fib ()
         
         echo "$(
             
-            fielder="${ofs:-,}$IFS" _tuple -d "${concater:-${IFS: -1}}" -- x y z _ < <(echo "$acc") ;
+            fielder="${ofs:-,}$IFS" Tuple -d "${concater:-${IFS: -1}}" -- x y z _ < <(echo "$acc") ;
             echo "$((x + 1))${ofs:-, }$((z))${ofs:-, }$((y + z))${ofs:-, }${q}"
             
             )${concater:-${IFS: -1}}${acc}"
@@ -85,20 +85,37 @@ ofs=' ' fib 13 | f='"$x $y"' fp map -- x y _ _ | tac | f='printf "%s, " "$x $y"'
 *unfold style :*
 
 ~~~ sh
+: 1
+# style: codegen then pipe (meta-programming like)
+
 fib ()
 (
-    outer="${outer:-echo \"\$x \$y \$z\"}" \
-    init='0 0 1' initer='Tuple -- x y z < <(echo "$init") && '"$outer" \
-    unfolder=' { Tuple -- x y z < <(echo "$((x + 1)) $((z)) $((y + z))") && '"$outer"' ; } ' \
-    delimiter=' &&' ender=: \
-    fp unfold seq "${n:-13}" &&
+    n="${n}" echoer="${echoer:-echo \"\$x \$y \$z\"}" \
+    init='Tuple -- x y z < <(echo "$initer") && '"$echoer" \
+    unfolder=' { Tuple -- x y z < <(echo "$((x + 1)) $((z)) $((y + z))") && '"$echoer"' ; } ' \
+    folder='echo "${acc} ${processes}"' delimiter=' &&' \
+    initer='0 0 1' fp unfold eval 'eval "$(cat -) :"' &&
     
     : ) ;
-~~~
 
-~~~
-outer='printf "%s, " "$x $y"' n=13 fib
+echoer='printf "%s, " "$x $y"' n=13 fib
 # 0 0, 1 1, 2 1, 3 2, 4 3, 5 5, 6 8, 7 13, 8 21, 9 34, 10 55, 11 89, 12 144, 13 233, 
+
+: 2
+# style: direct run inner the reduce and message to stderr (side effect like)
+
+fib ()
+(
+    n="${n}" echoer='echo "$x $y $z"' init='0 0 1' returner="${returner:-$echoer}" \
+    unfolder=' { Tuple -- x y z < <(echo "$((x + 1)) $((z)) $((y + z))") && '"$echoer"' ; } ' \
+    folder='Tuple -- x y z < <(echo "$acc") && erro '"$returner"' && eval "$processes"' \
+    fp unfold cat - | f="$returner" fp per -- x y z &&
+    
+    : ) ;
+
+returner='printf "%s, " "$x $y"' n=13 fib
+# 0 0, 1 1, 2 1, 3 2, 4 3, 5 5, 6 8, 7 13, 8 21, 9 34, 10 55, 11 89, 12 144, 13 233, 
+# --- attention: only last one is stdout, other all before it both are stderr.
 ~~~
 
 ## Funcs
