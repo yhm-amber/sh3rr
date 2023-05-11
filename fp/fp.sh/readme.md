@@ -85,8 +85,8 @@ ofs=' ' fib 13 | f='"$x $y"' fp map -- x y _ _ | tac | f='printf "%s, " "$x $y"'
 *unfold style :*
 
 ~~~ sh
-: 1
-# style: codegen then pipe (meta-programming like)
+: style 1
+# codegen then pipe (meta-programming like)
 
 fib ()
 (
@@ -101,8 +101,8 @@ fib ()
 echoer='printf "%s, " "$x $y"' n=13 fib
 # 0 0, 1 1, 2 1, 3 2, 4 3, 5 5, 6 8, 7 13, 8 21, 9 34, 10 55, 11 89, 12 144, 13 233, 
 
-: 2
-# style: direct run inner the reduce and message to stderr (side effect like)
+: style 2
+# direct run inner the reduce and message to stderr (side effect like)
 
 fib ()
 (
