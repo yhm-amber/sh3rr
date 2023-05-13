@@ -168,6 +168,8 @@ f='printf \ _%s "$x"' fp per x < <(seq 12)
 
 *see the Fibonacci ...*
 
+*and many things are warppings on `iterate` ...*
+
 ### `per`
 
 ~~~ sh
@@ -198,6 +200,8 @@ echo a,b,c:d,e,f: | fielder=, acc='' f='echo "$y .. $z .. $x ~ $acc"' fp reduce 
 ~~~
 
 *or see the Fibonacci ...*
+
+*and `map` is a func that warpping on `reduce` ...*
 
 ### `map`
 
@@ -261,7 +265,7 @@ ofs=' ' concater=$'\n:;;:' repeater=3 fp repeat AA BBB CCCC
 
 *also see the Fibonacci ...*
 
-
+*and `unfold` is a warpping on `map` and `reduce` ...*
 
 ## See also
 
