@@ -1,7 +1,7 @@
 
 
 ~~~ 
-Bring the revelations from the edge (instances) . 🦉
+‘Bring the revelations from the shell of the edge .’ 🦪🦉
 ~~~
 
 The three real wepons on *SHell* : <sup><kbd><var>来自过去的物质的三项启示：</var></kbd></sup>
