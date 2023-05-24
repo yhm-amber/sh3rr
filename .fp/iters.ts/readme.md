@@ -43,6 +43,8 @@ console.log(fibs.take(14));
 
 #### fac
 
+`class` type: 
+
 ~~~ ts
 const factorial = 
 (n: number): number =>
@@ -60,9 +62,24 @@ const factorial =
 console.log(factorial(5)); // ans: 120
 ~~~
 
+`interface` type: 
+
+~~~ ts
+const fac = 
+(n: number, factorial: number = 1)
+: TailCall<number> =>
+    
+    (n === 1) ? tailcall.done(factorial) 
+    : tailcall.call(() => fac(n - 1, factorial * n)) ;
+
+console.log(tailcall.invoke(() => fac(5))); // ans: 120
+~~~
+
 #### rem
 
 [ref]: https://segmentfault.com/a/1190000040173495
+
+for `class` type: 
 
 ~~~ ts
 const rb = 
@@ -75,6 +92,19 @@ const rb =
 console.log(rb(10000001,2).invoke()); // wait, ans: 1
 ~~~
 
+for `interface` type: 
+
+~~~ ts
+const rb = 
+(n: number, r: number)
+: TailCall<number> =>
+    
+    (n < r) ? tailcall.done(n) 
+    : tailcall.call(() => rb(n-r, r)) ;
+
+console.log(tailcall.invoke(rb(10000001,2))); // wait, ans: 1
+~~~
+
 ## idea by
 
 - `Stream`: [Stream.unfold/2. The Stream module in Elixir is full of… | by Dunya Kirkali | Medium](https://haagwee.medium.com/stream-unfold-2-5c22e5cf1a3d)
@@ -84,3 +114,5 @@ console.log(rb(10000001,2).invoke()); // wait, ans: 1
 ## see also
 
 - [Scala Unfold | Genuine Blog](https://blog.genuine.com/2020/07/scala-unfold/)
+
+
