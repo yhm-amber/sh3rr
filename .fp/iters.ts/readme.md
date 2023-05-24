@@ -39,6 +39,41 @@ console.log(fibs.take(3));
 console.log(fibs.take(14));
 ~~~
 
+### `TailCall`
+
+#### fac
+
+~~~ ts
+const factorial = 
+(n: number): number =>
+{
+    const iter = 
+    (acc: number, n: number)
+    : TailCall<number> =>
+        
+        (n === 1) ? TailCall.done(acc) 
+        : TailCall.call(() => iter(n * acc, n - 1)) ;
+    
+    return iter(1, n).invoke() ;
+}
+
+console.log(factorial(5)); // ans: 120
+~~~
+
+#### rem
+
+[ref]: https://segmentfault.com/a/1190000040173495
+
+~~~ ts
+const rb = 
+(n: number, r: number)
+: TailCall<number> =>
+    
+    (n < r) ? TailCall.done(n) 
+    : TailCall.call(() => rb(n-r, r)) ;
+
+console.log(rb(10000001,2).invoke()); // wait, ans: 1
+~~~
 
 ## idea by
 
