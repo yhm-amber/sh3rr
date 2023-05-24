@@ -43,7 +43,7 @@ console.log(fibs.take(14));
 
 #### fac
 
-`class` type: 
+for `class` type: 
 
 ~~~ ts
 const factorial = 
@@ -62,7 +62,7 @@ const factorial =
 console.log(factorial(5)); // ans: 120
 ~~~
 
-`interface` type: 
+for `interface` type: 
 
 ~~~ ts
 const fac = 
