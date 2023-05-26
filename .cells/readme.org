@@ -1,1 +1,3 @@
 cell inside cell, command inside command ... let the class or package become function, just let method be subcommand.
+
+—— 来自细胞组织与结构自身的形式的启示。
