@@ -1,9 +1,6 @@
+# Pipes All abouts
 
-## Elixir Pipes or Clojure Thread-last
-
-: para
-
-### ...
+与管道有关的一切 ... (尽量)
 
 ## SHell Pipes TS Reduce
 
@@ -331,3 +328,10 @@ console.log(result2); // 输出 [1, 2, 3]
 
 - ⚠ Näyttää siltä, että sinut on kirjattu ulos. Kirjaudu sisään uudelleen.
 
+
+
+## Elixir Pipes or Clojure Thread-last
+
+: para
+
+### ...
