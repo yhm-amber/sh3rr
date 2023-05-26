@@ -114,22 +114,21 @@ class TailCall
         public readonly result: T ,
         public readonly nextCall: () => TailCall<T> ,
     ) {} ;
-
+    
     static done
     <T>(value: T)
     : TailCall<T> 
     {
         return new TailCall(true, value, () => { throw new Error("not implemented"); }) ;
     } ;
-
-
+    
     static call
     <T>(nextCall: () => TailCall<T>)
     : TailCall<T> 
     {
         return new TailCall(false, null as any, nextCall);
     } ;
-
+    
     invoke
     (): T 
     {
