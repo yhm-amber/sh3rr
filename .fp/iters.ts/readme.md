@@ -31,12 +31,15 @@ const fibs = Stream.unfold
 const fibs = 
 Stream
     .iterate({x: 0, y: 0,z: 1}, ({ x, y, z }) => ({ x: x + 1, y: z, z: y + z }))
-    .map(({ x, y, z }) => ({ x, y }))
-    .filter(({ x, y }) => x % 2 === 1) ;
+    .map(({ x, y, z }) => ({ x, y })) ;
 
 // take
+
 console.log(fibs.take(3));
 console.log(fibs.take(14));
+
+console.log(fibs.filter(({ x, y }) => x % 2 === 1).take(3));
+console.log(fibs.filter(({ x, y }) => x % 2 === 1).take(14));
 ~~~
 
 ### `TailCall`
