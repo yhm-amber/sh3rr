@@ -34,7 +34,7 @@ Stream
     .map(({ x, y, z }) => ({ x, y }))
     .filter(({ x, y }) => x % 2 === 1) ;
 
-// use
+// take
 console.log(fibs.take(3));
 console.log(fibs.take(14));
 ~~~
