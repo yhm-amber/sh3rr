@@ -1,7 +1,15 @@
 
-# SHell Pipes TS Reduce | New Bing Askings
+## Elixir Pipes or Clojure Thread-last
 
-## 提要
+: para
+
+### ...
+
+## SHell Pipes TS Reduce
+
+: reduce
+
+### 提要
 
 原本是问 New Bing `|` 和 `|&` 的区别，结果引出了 `<()` 和 `>()` 。
 
@@ -9,14 +17,14 @@
 
 然后，我希望看到明确的转换，但是它给错了，但是我又自己给弄出来了。
 
-## 转换
+### 转换
 
 分别有两个使用 `tee` 与 `>()` 的形式，分别形成两个转换效果：
 
 - 一个用于产生汇总的效果（很像 <kbd>[echoes.ts](../../../echoes#echoests)</kbd> ）
 - 一个用于分支管道（也就是复用同样的标准输入）
 
-### 汇总
+#### 汇总
 
 对于这个逻辑 (SHell) ：
 
@@ -53,7 +61,7 @@ echo 1,2,3 |
 
 这也更印证了管道和列表加 reduce 的共通性。
 
-### 分支管道
+#### 分支管道
 
 要被模仿的代码 (SHell) ：
 
@@ -109,9 +117,7 @@ const map = (f, xs) =>
 
 参考： <kbd>[you-dont-need/You-Dont-Need-Loops](https://github.com/you-dont-need/You-Dont-Need-Loops#map)</kbd>
 
-## *对话记录*
-
-### 释义
+### *对话记录*
 
 我的输入会进入引用块，下面就是 New Bing 的输出。
 
@@ -125,8 +131,6 @@ const map = (f, xs) =>
 *（这个我查了下是芬兰语。这个是当时的界面语言，不知道怎么回事阴差阳错用上了芬兰语，之前我记得选的是法语。哦我知道了，我选错了，这俩在英语里都是 `F` 开头的 ……）*
 
 其余均是来自 GPT 的输出。
-
-### 内容
 
 #### 1/20
 
