@@ -1,12 +1,10 @@
-*“回声”*
-
-----
-
 # *echoes.ts*
 
 ~~~
 🎃 make object likes namespace in TypeScript !
 ~~~
+
+*“回声”*
 
 ## 简述
 
