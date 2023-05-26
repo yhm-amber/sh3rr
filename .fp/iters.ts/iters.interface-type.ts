@@ -1,9 +1,9 @@
 export 
-interface TailCall
+interface Tailcall
 <T> 
 {
-    (): TailCall<T> ;
-    isComplete?: boolean ;
+    (): Tailcall<T> ;
+    completed?: boolean ;
     result?: T ;
 } ;
 
@@ -12,27 +12,27 @@ const tailcall =
 {
     call: 
         
-        <T,>(nextCall: TailCall<T>)
-        : TailCall<T> => nextCall ,
+        <T,>(nextcall: Tailcall<T>)
+        : Tailcall<T> => nextcall ,
     
     done: 
-
+    
         <T,>(value: T)
-        : TailCall<T> =>
+        : Tailcall<T> =>
             
             Object.assign
             (
                 () => { throw new Error(":tailcall: not implemented"); } , 
-                { isComplete: true, result: value }
+                { completed: true, result: value }
             ) ,
-
+    
     invoke: 
-
-        <T,>(tailCall: TailCall<T>)
+    
+        <T,>(tailcall: Tailcall<T>)
         : T =>
             
-            Stream.iterate(tailCall, (call) => (call.isComplete ? call : call()) )
-            .takeUntil((call) => call.isComplete!)
-            .reduce((_, call) => call.result!, tailCall.result!) ,
+            Stream.iterate(tailcall, (call) => (call.completed ? call : call()) )
+                .takeUntil((call) => call.completed!)
+                .reduce((_, call) => call.result!, tailcall.result!) ,
     
 } ;
