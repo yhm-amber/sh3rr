@@ -1,0 +1,339 @@
+namespace fp
+{
+    
+    type Fn <T, R> = (p: T) => R ;
+    
+    
+    
+    export 
+    const memoize = 
+    <T extends (...args: any[]) => any>(fn: T)
+    : T => 
+    {
+        const cache: Record<string, ReturnType<T>> = {};
+        
+        return ((...args: Parameters<T>)
+        : ReturnType<T> => 
+        {
+            const key = JSON.stringify(args) ;
+            if (!(key in cache)) 
+            { cache[key] = fn(...args); } ;
+            return cache[key] ;
+        }) as T ;
+    } ;
+    
+    
+    
+    export 
+    const apply = 
+    (f: Function, args: any[])
+    : any => 
+        f(...args) ;
+    
+    export 
+    const applieds = memoize(apply) ;
+    
+    
+    
+    export 
+    class Pipe
+    <T> 
+    {
+        constructor 
+        (
+            private readonly value: T , 
+            private readonly fns: Fn<any, any>[] = [] , 
+            private readonly piperun
+                : <T>(funcs: Fn<any, any>[], v: T) => T = 
+            memoize
+            (
+                <T,> (fs: Fn<any, any>[], v: T)
+                : T => 
+                    fs.reduce((r, f) => f(r), v)
+            ) , 
+        ) 
+        {} ;
+        
+        
+        private readonly runfn = 
+        ()
+        : T => 
+            
+            this.piperun(this.fns, this.value) ;
+        
+        
+        readonly then = 
+        <R,>(fn: Fn<T, R>)
+        : Pipe<R> => 
+        {
+            this.fns.push(fn);
+            return (this as unknown) as Pipe<R> ;
+        } ;
+        
+        
+        readonly run = 
+        ()
+        : Pipe<T> => 
+            
+            new Pipe(this.runfn(), [], this.piperun) ;
+        
+        
+        readonly pipi = 
+        <R,>
+        (fn: Fn<T, R>)
+        : Pipe<T> => 
+        {
+            fn(this.runfn()) ;
+            return new Pipe(this.value, this.fns, this.piperun) ;
+        } ;
+        
+        readonly pop = 
+        (): T => this.value ;
+    } ;
+    
+    
+    
+    export 
+    class Stream
+    <T> 
+    {
+        
+        constructor 
+        (private readonly generatorFunction: () => Generator<T>) 
+        {} ;
+        
+        
+        static readonly iterate = 
+        <T,>(initialValue: T, f: Fn<T, T>)
+        : Stream<T> => 
+            
+            new Stream
+            ( function* ()
+            : Generator<T> 
+            {
+                let value = initialValue ;
+                while (true) 
+                {
+                    yield value ;
+                    value = f(value) ;
+                } ;
+            } ) ;
+        
+        
+        static readonly unfold = 
+        <T, R>(initialValue: T, f: Fn<T, { mapper: R; iter: T } | undefined>)
+        : Stream<R> => 
+            
+            new Stream
+            ( function* ()
+            : Generator<R> 
+            {
+                let value = initialValue ;
+                while (true) 
+                {
+                    const next = f(value) ;
+                    if (next === undefined) break ;
+                    yield next.mapper ;
+                    value = next.iter ;
+                } ;
+            } ) ;
+        
+        
+        readonly map = 
+        <R,>(f: Fn<T, R>)
+        : Stream<R> => 
+            
+            new Stream
+            (( function* (this: Stream<T>)
+            : Generator<R> 
+            {
+                const iterator = this.generatorFunction() ;
+                while (true) 
+                {
+                    const { value, done } = iterator.next() ;
+                    if (done) break ;
+                    yield f(value) ;
+                } ;
+            } ).bind(this)) ;
+        
+        
+        readonly filter = 
+        (predicate: Fn<T, boolean>)
+        : Stream<T> => 
+            
+            new Stream
+            (( function* (this: Stream<T>)
+            : Generator<T> 
+            {
+                const iterator = this.generatorFunction() ;
+                while (true) 
+                {
+                    const { value, done } = iterator.next() ;
+                    if (done) break ;
+                    if (predicate(value)) yield value ;
+                }
+            } ).bind(this)) ;
+        
+        
+        readonly takeUntil = 
+        (predicate: Fn<T, boolean>)
+        : T[] => 
+        {
+            const result: T[] = [] ;
+            const iterator = this.generatorFunction() ;
+            while (true) 
+            {
+                const { value, done } = iterator.next() ;
+                result.push(value) ;
+                if (done || predicate(value)) break ;
+            } ;
+            return result ;
+        } ;
+        
+        readonly take = 
+        (n: number)
+        : T[] => 
+        {
+            let count = 1 ;
+            return this.takeUntil(() => !(count++ < n)) ;
+        } ;
+    } ;
+    
+    
+    
+    export 
+    class TailCall
+    <T> 
+    {
+        
+        constructor 
+        (
+            public readonly isComplete: boolean , 
+            public readonly result: T , 
+            public readonly nextCall: () => TailCall<T> , 
+        ) 
+        {} ;
+        
+        
+        static readonly done = 
+        <T,>(value: T)
+        : TailCall<T> => 
+            
+            new TailCall(true, value, () => { throw new Error("not implemented"); }) ;
+        
+        
+        static readonly call = 
+        <T,>(nextCall: () => TailCall<T>)
+        : TailCall<T> => 
+            
+            new TailCall(false, null as any, nextCall);
+        
+        
+        readonly invoke = 
+        (): T => 
+            
+            Stream
+                .iterate(this as TailCall<T>, x => (x.nextCall()))
+                .takeUntil(x => x.isComplete)
+                .reduce((_, x) => x.result, this.result) ;
+        
+    } ;
+} ;
+
+namespace Demos
+{
+    namespace Memoizes
+    {
+        export const test0 = () =>
+        {
+            const fib = fp.memoize((n: number): number => (n <= 1 ? n : fib(n - 1) + fib(n - 2)) ) ;
+            console.log(fib(40));
+            console.log(fib(40));
+        } ;
+        
+    } ;
+    Memoizes.test0();
+    
+    namespace Pipes
+    {
+        export const test0 = () =>
+        {
+            var y, z;
+            const result = new fp.Pipe(1)
+                .then(x => x + 1)
+                .then(x => x * x)
+                .then(x => x.toString())
+                .then(x => x.toString())
+                .run()
+                .then(x => x + 5)
+                .then(x => x + 0)
+                .pipi(x => (y = x + 1))
+                .pipi(x => (z = x + 1))
+                .then(x => x + "c")
+                // .run()
+                .pop();
+            
+            console.log(result);
+            console.log(y);
+            console.log(z);
+        } ;
+        
+    } ;
+    Pipes.test0();
+    
+    
+    
+    namespace Applies
+    {
+        export const test0 = () =>
+        {
+            console.log(fp.apply((a: number) => a+12, [3]) );
+        } ;
+        
+        export const test1 = () =>
+        {
+            new fp.Pipe(fp.apply((a: number, b: string) => b + (a*2), [3, "x"]) )
+                .then(x => console.log(x))
+                .run();
+        } ;
+    } ;
+    Applies.test0();
+    Applies.test1();
+    
+    
+    
+    namespace Streams
+    {
+        export const unfolds =
+        {
+            simple: 
+                
+                fp.Stream.unfold(0, x => x < 10 ? { mapper: x, iter: x + 1 } : undefined ) ,
+            
+            fibs: 
+                
+                fp.Stream.unfold
+                (
+                    { x: 0, y: 0, z: 1 },
+                    ({ x, y, z }) => ({ mapper: { x, y }, iter: { x: x + 1, y: z, z: y + z } })
+                ) ,
+            
+        } ;
+        
+        export const iterates =
+        {
+            fibs: 
+                
+                fp.Stream
+                    .iterate({x: 0, y: 0,z: 1}, ({ x, y, z }) => ({ x: x + 1, y: z, z: y + z }))
+                    .map(({ x, y, z }) => ({ x, y }))
+                    .filter(({ x, y }) => x % 2 === 1) ,
+            
+        } ;
+    } ;
+    console.log(Streams.unfolds.simple.take(7) );
+    console.log(Streams.unfolds.fibs.take(3) );
+    console.log(Streams.iterates.fibs.take(3) );
+    
+} ;
+
