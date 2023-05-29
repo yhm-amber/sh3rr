@@ -4,7 +4,65 @@
 🦪 lazy seq, memorize, tailrec, pipe, apply, ... 👾
 ~~~
 
-## use
+
+
+## usage
+
+### `fp.memoize`
+
+~~~ ts
+const fib = fp.memoize
+(
+    (n: number): number => 
+        (n <= 1 ? n : fib(n - 1) + fib(n - 2)) 
+) ;
+
+console.log(fib(40) ); // out: 102334155, and calcus quickly with less memory.
+~~~
+
+### `fp.Pipe`
+
+~~~ ts
+var y, z;
+const result = new fp.Pipe(1)
+    .then(x => x + 1)
+    .then(x => x * x)
+    .then(x => x.toString())
+    .then(x => x.toString())
+    .run()
+    .then(x => x + 5)
+    .then(x => x + 0)
+    .pipi(x => (y = x + 1))
+    .pipi(x => (z = x + 1))
+    .then(x => x + "c")
+    // .run()
+    .pop();
+
+console.log(result); // "4"
+console.log(y); // "4501"
+console.log(z); // "4501"
+~~~
+
+~~~ ts
+var y, z;
+const result = new fp.Pipe(1)
+    .then(x => x + 1)
+    .then(x => x * x)
+    .then(x => x.toString())
+    .then(x => x.toString())
+    .run()
+    .then(x => x + 5)
+    .then(x => x + 0)
+    .pipi(x => (y = x + 1))
+    .pipi(x => (z = x + 1))
+    .then(x => x + "c")
+    .run()
+    .pop();
+
+console.log(result); // "450c"
+console.log(y); // "4501"
+console.log(z); // "4501"
+~~~
 
 ### `fp.Stream`
 
@@ -46,7 +104,6 @@ console.log(fibs.filter(({ x, y }) => x % 2 === 1).take(14));
 
 #### fac
 
-
 ~~~ ts
 const factorial = 
 (n: number): number =>
@@ -65,10 +122,9 @@ console.log(factorial(5)); // ans: 120
 ~~~
 
 
-#### rem
+#### rb
 
 [ref]: https://segmentfault.com/a/1190000040173495
-
 
 ~~~ ts
 const rb = 
