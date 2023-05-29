@@ -417,11 +417,12 @@ namespace Demos
             
             fibs: 
                 
-                fp.Stream.unfold
-                (
-                    { x: 0, y: 0, z: 1 },
-                    ({ x, y, z }) => ({ mapper: { x, y }, iter: { x: x + 1, y: z, z: y + z } })
-                ) ,
+                fp.Stream
+                    .unfold
+                    (
+                        { x: 0, y: 0, z: 1 },
+                        ({ x, y, z }) => ({ mapper: { x, y }, iter: { x: x + 1, y: z, z: y + z } })
+                    ) ,
             
         } ;
         
