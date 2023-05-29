@@ -59,7 +59,7 @@ const factorial =
         : fp.TailCall.call(() => iter(n * acc, n - 1)) ;
     
     return iter(1, n).invoke() ;
-}
+} ;
 
 console.log(factorial(5)); // ans: 120
 ~~~
