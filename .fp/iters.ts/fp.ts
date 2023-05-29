@@ -240,19 +240,24 @@ namespace fp
     } ;
 } ;
 
+
+
+
 namespace Demos
 {
+    
     namespace Memoizes
     {
-        export const test0 = () =>
+        export namespace recurs
         {
-            const fib = fp.memoize((n: number): number => (n <= 1 ? n : fib(n - 1) + fib(n - 2)) ) ;
-            console.log(fib(40));
-            console.log(fib(40));
+            export const fib = fp.memoize((n: number): number => (n <= 1 ? n : fib(n - 1) + fib(n - 2)) ) ;
         } ;
         
     } ;
-    Memoizes.test0();
+    console.log(Memoizes.recurs.fib(40) );
+    console.log(Memoizes.recurs.fib(40) );
+    
+    
     
     namespace Pipes
     {
@@ -285,20 +290,20 @@ namespace Demos
     
     namespace Applies
     {
-        export const test0 = () =>
+        export const simple = () =>
         {
             console.log(fp.apply((a: number) => a+12, [3]) );
         } ;
         
-        export const test1 = () =>
+        export const pipedsimple = () =>
         {
             new fp.Pipe(fp.apply((a: number, b: string) => b + (a*2), [3, "x"]) )
                 .then(x => console.log(x))
                 .run();
         } ;
     } ;
-    Applies.test0();
-    Applies.test1();
+    Applies.simple();
+    Applies.pipedsimple();
     
     
     
@@ -334,6 +339,43 @@ namespace Demos
     console.log(Streams.unfolds.simple.take(7) );
     console.log(Streams.unfolds.fibs.take(3) );
     console.log(Streams.iterates.fibs.take(3) );
+    
+    
+    
+    namespace Tailcalls
+    {
+        export namespace simplecases
+        {
+            
+            export 
+            const rb =
+            (n: number, r: number)
+            : fp.TailCall<number> =>
+                
+                (n < r) ? fp.TailCall.done(n) 
+                : fp.TailCall.call(() => rb(n-r, r)) ;
+        } ;
+        
+        export namespace morecases
+        {
+            export 
+            const factorial = 
+            (n: number): number =>
+            {
+                const iter = 
+                (acc: number, n: number)
+                : fp.TailCall<number> =>
+                    
+                    (n === 1) ? fp.TailCall.done(acc) 
+                    : fp.TailCall.call(() => iter(n * acc, n - 1)) ;
+                
+                return iter(1, n).invoke() ;
+            } ;
+        } ;
+    } ;
+    console.log(Tailcalls.simplecases.rb(10000001,2).invoke() );
+    console.log(Tailcalls.morecases.factorial(5) );
+    
     
 } ;
 
