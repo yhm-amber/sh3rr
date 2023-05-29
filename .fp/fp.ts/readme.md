@@ -1,7 +1,7 @@
 # fp.ts
 
 ~~~
-🦪 lazy seq, memoize, tailrec, pipe, apply, cell, ... 👾
+🦪 lazy seq, memoize, tail call optimization , pipe, apply, cell, ... 👾
 ~~~
 
 
