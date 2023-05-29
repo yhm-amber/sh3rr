@@ -37,6 +37,29 @@ namespace fp
     
     
     export 
+    namespace Echoes
+    {
+        export 
+        const echoes =
+        <T = {[key: string]: any},> (waves: {[key: string]: (env: T) => any})
+        : T =>
+            Object.entries(waves).reduce
+            (
+                (envs, [fn, f]) => ({... envs, [fn]: f(envs)}) ,
+                {} as T
+            ) ;
+        
+        export 
+        const call = 
+        <T extends Record<K, (...args: any) => any>, K extends keyof T>
+        (obj: T, key: K): { [P in K]: ReturnType<T[P]>; }[K] =>
+            echoes<{[P in K]: ReturnType<T[P]>}>(obj)[key] ;
+        
+    } ;
+    
+    
+    
+    export 
     class Pipe
     <T> 
     {
@@ -112,11 +135,11 @@ namespace fp
             ( function* ()
             : Generator<T> 
             {
-                let value = initialValue ;
+                let value = initialValue;
                 while (true) 
                 {
                     yield value ;
-                    value = f(value) ;
+                    value = f(value);
                 } ;
             } ) ;
         
@@ -129,13 +152,15 @@ namespace fp
             ( function* ()
             : Generator<R> 
             {
-                let value = initialValue ;
-                while (true) 
+                let value = initialValue;
+                let next: { mapper: R, iter: T } | undefined = f(value);
+                
+                while (!(next === undefined)) 
                 {
-                    const next = f(value) ;
-                    if (next === undefined) break ;
                     yield next.mapper ;
-                    value = next.iter ;
+                    
+                    value = next.iter;
+                    next = f(value);
                 } ;
             } ) ;
         
@@ -152,7 +177,7 @@ namespace fp
                 while (true) 
                 {
                     const { value, done } = iterator.next() ;
-                    if (done) break ;
+                    if (done) break;
                     yield f(value) ;
                 } ;
             } ).bind(this)) ;
@@ -170,7 +195,7 @@ namespace fp
                 while (true) 
                 {
                     const { value, done } = iterator.next() ;
-                    if (done) break ;
+                    if (done) break;
                     if (predicate(value)) yield value ;
                 }
             } ).bind(this)) ;
@@ -185,8 +210,8 @@ namespace fp
             while (true) 
             {
                 const { value, done } = iterator.next() ;
-                result.push(value) ;
-                if (done || predicate(value)) break ;
+                result.push(value);
+                if (done || predicate(value)) break;
             } ;
             return result ;
         } ;
@@ -195,8 +220,8 @@ namespace fp
         (n: number)
         : T[] => 
         {
-            let count = 1 ;
-            return this.takeUntil(() => !(count++ < n)) ;
+            let count = 1;
+            return this.takeUntil(() => !(count++ < n));
         } ;
     } ;
     
@@ -220,14 +245,14 @@ namespace fp
         <T,>(value: T)
         : TailCall<T> => 
             
-            new TailCall(true, value, () => { throw new Error("not implemented"); }) ;
+            new TailCall(true, value, () => { throw new Error("TailCall.done: not implemented"); }) ;
         
         
         static readonly call = 
         <T,>(nextCall: () => TailCall<T>)
         : TailCall<T> => 
             
-            new TailCall(false, null as any, nextCall);
+            new TailCall(false, null as any, nextCall) ;
         
         
         readonly invoke = 
@@ -289,6 +314,67 @@ namespace Demos
     } ;
     console.log(Appliedses.treerec.fiba(41) );
     console.log(Appliedses.treerec.fib(41) );
+    
+    
+    
+    namespace Echoeses
+    {
+        export namespace simple
+        {
+            export const ffs =
+            {
+                f1: (env: { [key: string]: Function }) => 
+                    
+                    (n: number): number => 1 + n ,
+                
+                f2: (env: { [key: string]: Function }) => 
+                    
+                    (x: number): number => env.f1(x * 2) ,
+                
+            } ;
+        } ;
+        
+        export namespace more
+        {
+            export const xx =
+            {
+                x0: (env: { [key: string]: any }) => 
+                    
+                    1 ,
+                
+                f: (env: { [key: string]: any }) => 
+                    
+                    (s: string)
+                    : number => 
+                        s.length ,
+                
+                f2: (env: { [key: string]: any }) => 
+                    
+                    (s: string, n: number)
+                    : Promise<number> => 
+                        Promise.resolve(env.f(s) + n - env.x0) ,
+            } ;
+        } ;
+        
+        export const runs = () =>
+        {
+            console.log(fp.Echoes.echoes(Echoeses.simple.ffs).f2(3) ); // out: 7
+            
+            
+            fp.Echoes
+                .echoes<{f2: ReturnType<typeof Echoeses.more.xx.f2>}>(Echoeses.more.xx).f2('aa',3)
+                .then(r => console.log(r)); // out: 4
+            
+            fp.Echoes
+                .echoes(Echoeses.more.xx).f2('aaa',3)
+                .then( (r: number) => console.log(r) ); // out: 5
+            
+            fp.Echoes
+                .call(Echoeses.more.xx,'f2')('a',3)
+                .then(r => console.log(r)); // out: 3
+        } ;
+    } ;
+    Echoeses.runs();
     
     
     
