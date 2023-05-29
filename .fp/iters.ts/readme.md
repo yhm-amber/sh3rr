@@ -10,6 +10,8 @@
 
 ### `fp.memoize`
 
+#### treerec
+
 ~~~ ts
 const fib = fp.memoize
 (
@@ -38,9 +40,9 @@ const result = new fp.Pipe(1)
     // .run()
     .pop();
 
-console.log(result); // "4"
-console.log(y); // "4501"
-console.log(z); // "4501"
+console.log(result); // out: "4"
+console.log(y); // out: "4501"
+console.log(z); // out: "4501"
 ~~~
 
 ~~~ ts
@@ -59,9 +61,33 @@ const result = new fp.Pipe(1)
     .run()
     .pop();
 
-console.log(result); // "450c"
-console.log(y); // "4501"
-console.log(z); // "4501"
+console.log(result); // out: "450c"
+console.log(y); // out: "4501"
+console.log(z); // out: "4501"
+~~~
+
+### `fp.apply`
+
+#### simple
+
+~~~ ts
+console.log(fp.apply((a: number) => a+12, [3]) ); // out: 15
+
+new fp.Pipe(fp.apply((a: number, b: string) => b + (a*2), [3, "x"]) )
+    .then(x => console.log(x))
+    .run(); // out: "x6"
+~~~
+
+### `fp.applides`
+
+#### treerec
+
+~~~ ts
+const fiba = (n: number): number => (n <= 1 ? n : fp.applieds(fiba,[n - 1]) + fp.applieds(fiba,[n - 2]) ) ;
+const fib = (n: number): number => fp.applieds(fiba,[n]) ;
+
+console.log(fiba(41) ); // out: 165580141, and calcus quickly with less memory.
+console.log(fib(41) ); // out: 165580141, and calcus quickly with less memory.
 ~~~
 
 ### `fp.Stream`
@@ -72,18 +98,20 @@ Just like stream/lazylist in elixir or scala.
 
 ~~~ ts
 const s = fp.Stream.unfold(0, x => x < 10 ? { mapper: x, iter: x + 1 } : undefined ) ;
-console.log(s.take(3)); // [0, 1, 2]
+console.log(s.take(3)); // out: [0, 1, 2]
 ~~~
 
 #### fib
 
 ~~~ ts
 // unfold
-const fibs = fp.Stream.unfold
-(
-    { x: 0, y: 0, z: 1 },
-    ({ x, y, z }) => ({ mapper: { x, y }, iter: { x: x + 1, y: z, z: y + z } })
-) ;
+const fibs = 
+fp.Stream
+    .unfold
+    (
+        { x: 0, y: 0, z: 1 },
+        ({ x, y, z }) => ({ mapper: { x, y }, iter: { x: x + 1, y: z, z: y + z } })
+    ) ;
 
 // or iterate
 const fibs = 
@@ -93,11 +121,12 @@ fp.Stream
 
 // take
 
-console.log(fibs.take(3));
-console.log(fibs.take(14));
+console.log(fibs.take(3) );
+console.log(fibs.take(14) );
 
-console.log(fibs.filter(({ x, y }) => x % 2 === 1).take(3));
-console.log(fibs.filter(({ x, y }) => x % 2 === 1).take(14));
+console.log(fibs.filter(({ x, y }) => x % 2 === 1).take(3) );
+console.log(fibs.filter(({ x, y }) => x % 2 === 1).take(14) );
+console.log(fibs.take(14).filter(({ x, y }) => x % 2 === 1) );
 ~~~
 
 ### `fp.TailCall`
@@ -118,9 +147,8 @@ const factorial =
     return iter(1, n).invoke() ;
 } ;
 
-console.log(factorial(5)); // ans: 120
+console.log(factorial(5)); // out: 120
 ~~~
-
 
 #### rb
 
@@ -134,7 +162,7 @@ const rb =
     (n < r) ? fp.TailCall.done(n) 
     : fp.TailCall.call(() => rb(n-r, r)) ;
 
-console.log(rb(10000001,2).invoke()); // wait, ans: 1
+console.log(rb(10000001,2).invoke()); // wait, out: 1
 ~~~
 
 
@@ -142,6 +170,9 @@ console.log(rb(10000001,2).invoke()); // wait, ans: 1
 
 `fp.memoize`: 
 - [Functional Thinking | nealford.com](https://nealford.com/books/functionalthinking.html)
+
+`fp.Pipe`: 
+- [Promise | JavaScript | MDN](https://developer.mozilla.org//docs/Web/JavaScript/Reference/Global_Objects/Promise)
 
 `fp.Stream`: 
 - [Enumerables and Streams | The Elixir programming language](https://elixir-lang.org/getting-started/enumerables-and-streams.html)
