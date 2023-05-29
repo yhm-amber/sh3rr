@@ -22,6 +22,66 @@ const fib = fp.memoize
 console.log(fib(40) ); // out: 102334155, and calcus quickly with less memory.
 ~~~
 
+### `fp.Echoes`
+
+#### simple
+
+~~~ ts
+const ffs =
+{
+    f1: (env: { [key: string]: Function }) => 
+        
+        (n: number): number => 1 + n ,
+    
+    f2: (env: { [key: string]: Function }) => 
+        
+        (x: number): number => env.f1(x * 2) ,
+    
+} ;
+
+console.log(fp.Echoes.echoes(ffs).f2(3) ); // out: 7
+~~~
+
+#### more
+
+~~~ ts
+/* structorized namespace */
+
+const xx =
+{
+    x0: (env: { [key: string]: any }) => 
+        
+        1 ,
+    
+    f: (env: { [key: string]: any }) => 
+        
+        (s: string)
+        : number => 
+            s.length ,
+    
+    f2: (env: { [key: string]: any }) => 
+        
+        (s: string, n: number)
+        : Promise<number> => 
+            Promise.resolve(env.f(s) + n - env.x0) ,
+} ;
+
+
+/* use */
+
+Echoes
+    .echoes<{f2: ReturnType<typeof xx.f2>}>(xx).f2('aa',3)
+    .then(r => console.log(r)); // out: 4
+
+Echoes
+    .echoes(xx).f2('aaa',3)
+    .then( (r: number) => console.log(r) ); // out: 5
+
+Echoes
+    .call(xx,'f2')('a',3)
+    .then(r => console.log(r)); // out: 3
+~~~
+
 ### `fp.Pipe`
 
 ~~~ ts
