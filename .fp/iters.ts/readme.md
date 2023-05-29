@@ -1,4 +1,4 @@
-# iters.ts
+# fp.ts
 
 ~~~
 🦪 lazy seq, memorize, tailrec, pipe, apply, ... 👾
