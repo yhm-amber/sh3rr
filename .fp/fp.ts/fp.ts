@@ -7,7 +7,7 @@ namespace fp
     
     export 
     const memoize = 
-    <T extends (...args: any[]) => any>(fn: T)
+    <T extends (...args: any[]) => any> (fn: T)
     : T => 
     {
         const cache: Record<string, ReturnType<T>> = {};
@@ -26,10 +26,10 @@ namespace fp
     
     export 
     const apply = 
-    (f: Function, args: any[])
+    <T,> (f: Function, args: any[], that: T|undefined = undefined)
     : any => 
         
-        f(...args) ;
+        f.call(that, ...args) ;
     
     export 
     const applieds = memoize(apply) ;
@@ -42,7 +42,7 @@ namespace fp
         export 
         const echoes =
         <T = {[key: string]: any},> (waves: {[key: string]: (env: T) => any})
-        : T =>
+        : T => 
             Object.entries(waves).reduce
             (
                 (envs, [fn, f]) => ({... envs, [fn]: f(envs)}) ,
@@ -51,9 +51,9 @@ namespace fp
         
         export 
         const call = 
-        <T extends Record<K, (...args: any) => any>, K extends keyof T>
-        (obj: T, key: K): { [P in K]: ReturnType<T[P]>; }[K] =>
-            echoes<{[P in K]: ReturnType<T[P]>}>(obj)[key] ;
+        <T extends Record<K, (...args: any) => any>, K extends keyof T> (obj: T, key: K)
+        : { [P in K]: ReturnType<T[P]> ; }[K] => 
+            echoes <{[P in K]: ReturnType<T[P]> }>(obj) [key] ;
         
     } ;
     
@@ -68,7 +68,7 @@ namespace fp
             private readonly value: T , 
             private readonly fns: Fn<any, any>[] = [] , 
             private readonly piperunner
-                : <T>(funcs: Fn<any, any>[], v: T) => T = 
+                : <T> (funcs: Fn<any, any>[], v: T) => T = 
             memoize
             (
                 <T,> (fs: Fn<any, any>[], v: T)
@@ -87,7 +87,7 @@ namespace fp
         
         
         readonly then = 
-        <R,>(fn: Fn<T, R>)
+        <R,> (fn: Fn<T, R>)
         : Pipe<R> => 
         {
             this.fns.push(fn);
@@ -103,8 +103,7 @@ namespace fp
         
         
         readonly pipi = 
-        <R,>
-        (fn: Fn<T, R>)
+        <R,> (fn: Fn<T, R>)
         : Pipe<T> => 
         {
             fn(this.runfn());
@@ -128,7 +127,7 @@ namespace fp
         
         
         static readonly iterate = 
-        <T,>(initialValue: T, f: Fn<T, T>)
+        <T,> (initialValue: T, f: Fn<T, T>)
         : Stream<T> => 
             
             new Stream
@@ -145,7 +144,7 @@ namespace fp
         
         
         static readonly unfold = 
-        <T, R>(initialValue: T, f: Fn<T, { mapper: R; iter: T } | undefined>)
+        <T, R> (initialValue: T, f: Fn<T, { mapper: R; iter: T } | undefined>)
         : Stream<R> => 
             
             new Stream
@@ -166,7 +165,7 @@ namespace fp
         
         
         readonly map = 
-        <R,>(f: Fn<T, R>)
+        <R,> (f: Fn<T, R>)
         : Stream<R> => 
             
             new Stream
@@ -242,14 +241,14 @@ namespace fp
         
         
         static readonly done = 
-        <T,>(value: T)
+        <T,> (value: T)
         : TailCall<T> => 
             
             new TailCall(true, value, () => { throw new Error("TailCall.done: not implemented"); }) ;
         
         
         static readonly call = 
-        <T,>(nextCall: () => TailCall<T>)
+        <T,> (nextCall: () => TailCall<T>)
         : TailCall<T> => 
             
             new TailCall(false, null as any, nextCall) ;
@@ -363,15 +362,15 @@ namespace Demos
             
             fp.Echoes
                 .echoes<{f2: ReturnType<typeof Echoeses.more.xx.f2>}>(Echoeses.more.xx).f2('aa',3)
-                .then(r => console.log(r)); // out: 4
+                .then(r => console.log(`Promising: Echoeses.more I: ${r}`)); // out: 4
             
             fp.Echoes
                 .echoes(Echoeses.more.xx).f2('aaa',3)
-                .then( (r: number) => console.log(r) ); // out: 5
+                .then( (r: number) => console.log(`Promising: Echoeses.more II: ${r}`) ); // out: 5
             
             fp.Echoes
                 .call(Echoeses.more.xx,'f2')('a',3)
-                .then(r => console.log(r)); // out: 3
+                .then(r => console.log(`Promising: Echoeses.more III: ${r}`)); // out: 3
         } ;
     } ;
     Echoeses.runs();
