@@ -28,6 +28,7 @@ namespace fp
     const apply = 
     (f: Function, args: any[])
     : any => 
+        
         f(...args) ;
     
     export 
@@ -43,7 +44,7 @@ namespace fp
         (
             private readonly value: T , 
             private readonly fns: Fn<any, any>[] = [] , 
-            private readonly piperun
+            private readonly piperunner
                 : <T>(funcs: Fn<any, any>[], v: T) => T = 
             memoize
             (
@@ -59,7 +60,7 @@ namespace fp
         ()
         : T => 
             
-            this.piperun(this.fns, this.value) ;
+            this.piperunner(this.fns, this.value) ;
         
         
         readonly then = 
@@ -75,7 +76,7 @@ namespace fp
         ()
         : Pipe<T> => 
             
-            new Pipe(this.runfn(), [], this.piperun) ;
+            new Pipe(this.runfn(), [], this.piperunner) ;
         
         
         readonly pipi = 
@@ -83,8 +84,8 @@ namespace fp
         (fn: Fn<T, R>)
         : Pipe<T> => 
         {
-            fn(this.runfn()) ;
-            return new Pipe(this.value, this.fns, this.piperun) ;
+            fn(this.runfn());
+            return new Pipe(this.value, this.fns, this.piperunner) ;
         } ;
         
         readonly pop = 
@@ -245,17 +246,49 @@ namespace fp
 
 namespace Demos
 {
+    console.log("-------- --------");
+    
     
     namespace Memoizes
     {
-        export namespace recurs
+        export namespace treerec
         {
             export const fib = fp.memoize((n: number): number => (n <= 1 ? n : fib(n - 1) + fib(n - 2)) ) ;
         } ;
         
     } ;
-    console.log(Memoizes.recurs.fib(40) );
-    console.log(Memoizes.recurs.fib(40) );
+    console.log(Memoizes.treerec.fib(40) );
+    console.log(Memoizes.treerec.fib(40) );
+    
+    
+    
+    namespace Applies
+    {
+        export const simple = () =>
+        {
+            console.log(fp.apply((a: number) => a+12, [3]) );
+        } ;
+        
+        export const pipedsimple = () =>
+        {
+            new fp.Pipe(fp.apply((a: number, b: string) => b + (a*2), [3, "x"]) )
+                .then(x => console.log(x))
+                .run();
+        } ;
+    } ;
+    Applies.simple();
+    Applies.pipedsimple();
+    
+    namespace Appliedses
+    {
+        export namespace treerec
+        {
+            export const fiba = (n: number): number => (n <= 1 ? n : fp.applieds(fiba,[n - 1]) + fp.applieds(fiba,[n - 2]) ) ;
+            export const fib = (n: number): number => fp.applieds(fiba,[n]) ;
+        } ;
+    } ;
+    console.log(Appliedses.treerec.fiba(41) );
+    console.log(Appliedses.treerec.fib(41) );
     
     
     
@@ -288,24 +321,6 @@ namespace Demos
     
     
     
-    namespace Applies
-    {
-        export const simple = () =>
-        {
-            console.log(fp.apply((a: number) => a+12, [3]) );
-        } ;
-        
-        export const pipedsimple = () =>
-        {
-            new fp.Pipe(fp.apply((a: number, b: string) => b + (a*2), [3, "x"]) )
-                .then(x => console.log(x))
-                .run();
-        } ;
-    } ;
-    Applies.simple();
-    Applies.pipedsimple();
-    
-    
     
     namespace Streams
     {
@@ -331,14 +346,15 @@ namespace Demos
                 
                 fp.Stream
                     .iterate({x: 0, y: 0,z: 1}, ({ x, y, z }) => ({ x: x + 1, y: z, z: y + z }))
-                    .map(({ x, y, z }) => ({ x, y }))
-                    .filter(({ x, y }) => x % 2 === 1) ,
+                    .map(({ x, y, z }) => ({ x, y })) ,
             
         } ;
     } ;
-    console.log(Streams.unfolds.simple.take(7) );
-    console.log(Streams.unfolds.fibs.take(3) );
-    console.log(Streams.iterates.fibs.take(3) );
+    console.log(Streams.unfolds.simple.take(16) );
+    console.log(Streams.unfolds.fibs.take(4) );
+    console.log(Streams.iterates.fibs.take(4) );
+    console.log(Streams.unfolds.fibs.filter(({ x, y }) => x % 2 === 1).take(14) );
+    console.log(Streams.unfolds.fibs.take(14).filter(({ x, y }) => x % 2 === 1) );
     
     
     
@@ -373,7 +389,7 @@ namespace Demos
             } ;
         } ;
     } ;
-    console.log(Tailcalls.simplecases.rb(10000001,2).invoke() );
+    console.log(Tailcalls.simplecases.rb(1000001,2).invoke() );
     console.log(Tailcalls.morecases.factorial(5) );
     
     
