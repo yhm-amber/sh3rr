@@ -34,8 +34,9 @@
 #### *[⚗] [Elixir]*
 
 ~~~ elixir
-### aim: 
-### [ {0, 0}, {1, 1}, {2, 1}, {3, 2}, {4, 3}, {5, 5}, {6, 8}, {7, 13}, {8, 21}, {9, 34}, {10, 55}, {11, 89}, {12, 144}, {13, 233} ]
+### aim ###
+[ {0, 0}, {1, 1}, {2, 1}, {3, 2}, {4, 3}, {5, 5}, {6, 8}, {7, 13}, {8, 21}, {9, 34}, {10, 55}, {11, 89}, {12, 144}, {13, 233} ]
+### aim ###
 
 # tail rec
 
@@ -80,10 +81,9 @@ end .(13) ;
 #### *[🥓] [Scala]*
 
 ~~~ scala
-/**
- * aim: 
- * List((0,0), (1,1), (2,1), (3,2), (4,3), (5,5), (6,8), (7,13), (8,21), (9,34), (10,55), (11,89), (12,144), (13,233)): List[(Int, BigInt)]
- */
+/** aim **/
+List((0,0), (1,1), (2,1), (3,2), (4,3), (5,5), (6,8), (7,13), (8,21), (9,34), (10,55), (11,89), (12,144), (13,233)): List[(Int, BigInt)]
+/** aim **/
 
 /* tail rec */
 
@@ -167,6 +167,98 @@ end .(13) ;
         .map{ case (x, y, z) => x -> y }
         .take(n+1).toList
 }) (13) ;
+~~~
+
+#### *[🧊] [TypeScript]*
+
+~~~ ts
+/** aim **/
+[ 
+    {"x": 0, "y": "0"}, 
+    {"x": 1, "y": "1"}, 
+    {"x": 2, "y": "1"}, 
+    {"x": 3, "y": "2"}, 
+    {"x": 4, "y": "3"}, 
+    {"x": 5, "y": "5"}, 
+    {"x": 6, "y": "8"}, 
+    {"x": 7, "y": "13"}, 
+    {"x": 8, "y": "21"}, 
+    {"x": 9, "y": "34"}, 
+    {"x": 10, "y": "55"}, 
+    {"x": 11, "y": "89"}, 
+    {"x": 12, "y": "144"}, 
+    {"x": 13, "y": "233"} 
+]
+/** aim **/
+
+/* tail rec */
+
+// class style
+
+class Fib
+<T = {x: number, y: bigint}>
+{
+    constructor
+    (
+        readonly n: number ,
+        
+        readonly res: T[] = [] ,
+        readonly para
+            : {x: number, y: bigint, z: bigint} = 
+        {x: 0, y: 0n, z: 1n} ,
+    ) {} ;
+    
+    readonly iter = 
+    () => 
+        this.para.x > this.n ? this.res : new Fib
+        ( this.n , [{x: this.para.x, y: this.para.y}, ...this.res] ,
+        ({
+            x: this.para.x + 1 ,
+            y: this.para.z ,
+            z: this.para.y + this.para.z ,
+        }) ) ;
+    
+    readonly run = 
+    () => 
+        Array(1 + this.n).fill(null)
+            .reduce( (c,_) => c instanceof Fib ? c.iter() : c , this )
+            .res.reverse() as T[] ;
+} ;
+
+console.log(new Fib(13).run().map( ({x, y}) => ({x, y: y.toString()}) ) );
+
+/* reduce / fold / ... */
+
+const fibs = 
+( Array.from({length: 13 + 1}, (_, i) => i) )
+    .reduce
+    <{r: {x: number, y: bigint}[], y: bigint, z: bigint}>
+    (
+        ({r, y, z}, x) => ({r: [{x,y}, ...r], y: z, z: y + z}),
+        {r: [], y: 0n, z: 1n}
+    ).r.reverse() ;
+
+console.log(fibs.map( ({x, y}) => ({x, y: y.toString()}) ) );
+
+/* stream / lazylist / iterator / unfold / ... */
+
+const fibs = 
+Array(13 + 1)
+    .fill
+    ( (function* ()
+    : IterableIterator<{ x: number, y: bigint }>
+    {
+        let itering: {x: number, y: bigint, z: bigint} = {x: 0, y: 0n, z: 1n} ;
+        
+        while (true)
+        {
+            yield {x: itering.x, y: itering.y} ;
+            itering = {x: itering.x + 1, y: itering.z, z: itering.y + itering.z};
+        } ;
+    }) () )
+    .reduce( (res, iter) => [...res, iter.next().value] , [] ) as {x: number, y: bigint}[] ;
+
+console.log(fibs.map( ({x,y}) => ({x, y: y.toString()}) ));
 ~~~
 
 ### *Tail recursion*
@@ -260,6 +352,60 @@ fib(13).reverse ;
 // List((0,0), (1,1), (2,1), (3,2), (4,3), (5,5), (6,8), (7,13), (8,21), (9,34), (10,55), (11,89), (12,144), (13,233)): List[(Long, BigInt)]
 ~~~
 
+#### *[🧊] [TypeScript]*
+
+~~~ ts
+class Fib
+<T = {x: number, y: bigint}>
+{
+    constructor
+    (
+        readonly n: number ,
+        
+        readonly res: T[] = [] ,
+        readonly para
+            : {x: number, y: bigint, z: bigint} = 
+        {x: 0, y: 0n, z: 1n} ,
+    ) {} ;
+    
+    readonly iter = 
+    () => 
+        this.para.x > this.n ? this.res : new Fib
+        ( this.n , [{x: this.para.x, y: this.para.y}, ...this.res] ,
+        ({
+            x: this.para.x + 1 ,
+            y: this.para.z ,
+            z: this.para.y + this.para.z ,
+        }) ) ;
+    
+    readonly run = 
+    () => 
+        Array(1 + this.n).fill(null)
+            .reduce( (c,_) => c instanceof Fib ? c.iter() : c , this )
+            .res.reverse() as T[] ;
+} ;
+
+console.log(new Fib(13).run().map( ({x, y}) => ({x, y: y.toString()}) ) );
+
+/* [LOG]: 
+[ 
+    {"x": 0, "y": "0"}, 
+    {"x": 1, "y": "1"}, 
+    {"x": 2, "y": "1"}, 
+    {"x": 3, "y": "2"}, 
+    {"x": 4, "y": "3"}, 
+    {"x": 5, "y": "5"}, 
+    {"x": 6, "y": "8"}, 
+    {"x": 7, "y": "13"}, 
+    {"x": 8, "y": "21"}, 
+    {"x": 9, "y": "34"}, 
+    {"x": 10, "y": "55"}, 
+    {"x": 11, "y": "89"}, 
+    {"x": 12, "y": "144"}, 
+    {"x": 13, "y": "233"} 
+] */
+~~~
+
 
 ### *Reduce*
 
@@ -291,9 +437,9 @@ fib.(13) |> Enum.reverse # [ {0, 0}, {1, 1}, {2, 1}, {3, 2}, {4, 3}, {5, 5}, {6,
 simple: 
 
 ~~~ typescript
-const fib13 = 
+const fibs = 
 
-( Array.from({length: 14}, (_, i) => i) )
+( Array.from({length: 13 + 1}, (_, i) => i) )
     .reduce
     <{r: {x: number, y: bigint}[], y: bigint, z: bigint}>
     (
@@ -302,7 +448,7 @@ const fib13 =
     ).r.reverse() ;
 
 
-console.log(fib13.map( ({x, y}) => ({x, y: y.toString()}) ) ) ;
+console.log(fibs.map( ({x, y}) => ({x, y: y.toString()}) ) );
 
 /* [LOG]: 
 [ 
@@ -375,7 +521,43 @@ fib.(-1) # []
 
 #### *[🧊] [TypeScript]*
 
-...
+~~~ ts
+const fibs = 
+Array(13 + 1)
+    .fill
+    ( (function* ()
+    : IterableIterator<{ x: number, y: bigint }>
+    {
+        let itering: {x: number, y: bigint, z: bigint} = {x: 0, y: 0n, z: 1n} ;
+        
+        while (true)
+        {
+            yield {x: itering.x, y: itering.y} ;
+            itering = {x: itering.x + 1, y: itering.z, z: itering.y + itering.z};
+        } ;
+    }) () )
+    .reduce( (res, iter) => [...res, iter.next().value] , [] ) as {x: number, y: bigint}[] ;
+
+console.log(fibs.map( ({x,y}) => ({x, y: y.toString()}) ));
+
+/* [LOG]: 
+[ 
+    {"x": 0, "y": "0"}, 
+    {"x": 1, "y": "1"}, 
+    {"x": 2, "y": "1"}, 
+    {"x": 3, "y": "2"}, 
+    {"x": 4, "y": "3"}, 
+    {"x": 5, "y": "5"}, 
+    {"x": 6, "y": "8"}, 
+    {"x": 7, "y": "13"}, 
+    {"x": 8, "y": "21"}, 
+    {"x": 9, "y": "34"}, 
+    {"x": 10, "y": "55"}, 
+    {"x": 11, "y": "89"}, 
+    {"x": 12, "y": "144"}, 
+    {"x": 13, "y": "233"} 
+] */
+~~~
 
 #### *[🥓] [Scala]*
 
