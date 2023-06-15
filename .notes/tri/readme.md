@@ -14,6 +14,9 @@
 [🥓]: https://scastie.scala-lang.org
 [Scala]: https://scala-lang.org
 
+[🍈]: https://www.tryclojure.com
+[Clojure]: https://clojure.org
+
 # Tail recursion, Reduce, and (lazy) Iterator
 
 尾递归、聚合、与惰性迭代器
@@ -259,6 +262,18 @@ Array(13 + 1)
     .reduce( (res, iter) => [...res, iter.next().value] , [] ) as {x: number, y: bigint}[] ;
 
 console.log(fibs.map( ({x,y}) => ({x, y: y.toString()}) ));
+~~~
+
+#### *[🍈] [Clojure]*
+
+~~~ clj
+
+~~~
+
+#### *[🦀] [Rust]*
+
+~~~ rust
+
 ~~~
 
 ### *Tail recursion*
@@ -517,7 +532,9 @@ fib.(-1) # []
 
 #### *[🦀] [Rust]*
 
-...
+~~~ rust
+
+~~~
 
 #### *[🧊] [TypeScript]*
 
