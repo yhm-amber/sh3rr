@@ -14,7 +14,7 @@
 [🥓]: https://scastie.scala-lang.org
 [Scala]: https://scala-lang.org
 
-[🍈]: https://www.tryclojure.com
+[🍈]: https://clojurescript.io
 [Clojure]: https://clojure.org
 
 # Tail recursion, Reduce, and (lazy) Iterator
