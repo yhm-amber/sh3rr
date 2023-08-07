@@ -189,6 +189,31 @@ console.log(fibs.filter(({ x, y }) => x % 2 === 1).take(14) );
 console.log(fibs.take(14).filter(({ x, y }) => x % 2 === 1) );
 ~~~
 
+#### more
+
+~~~ ts
+const fibonacci = fp.Stream.iterate([0, 1], ([a, b]) => [b, a + b]).map(([x]) => x) ;
+console.log(fibonacci.take(16)); // [0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610] 
+
+const fibacc_scan = fibonacci.scan((acc, x) => acc + x) ;
+console.log(fibacc_scan.take(10)); // [0, 1, 2, 4, 7, 12, 20, 33, 54, 88]
+
+const fibacc = fibonacci.fold((acc, x) => acc + x, 0) ;
+console.log(fibacc.take(11)); // [0, 0, 1, 2, 4, 7, 12, 20, 33, 54, 88]
+
+const fibb = fibonacci.fold((acc, x) => x, 777) ;
+console.log(fibb.take(10)); // [777, 0, 1, 1, 2, 3, 5, 8, 13, 21]
+
+const fibh = fibonacci.follow(88).follow(99) ;
+console.log(fibh.take(10)); // [99, 88, 0, 1, 1, 2, 3, 5, 8, 13]
+
+const fibw = fibonacci.window(3,2) ;
+console.log(fibw.take(5)); // [[0, 1, 1], [1, 2, 3], [3, 5, 8], [8, 13, 21], [21, 34, 55]]
+
+const fibz = fibonacci.zip(fibacc_scan) ;
+console.log(fibz.take(7)); // [[0, 0], [1, 1], [1, 2], [2, 4], [3, 7], [5, 12], [8, 20]]
+~~~
+
 ### `fp.TailCall`
 
 #### fac
