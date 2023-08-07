@@ -127,39 +127,39 @@ namespace fp
         
         
         static readonly iterate = 
-        <T,> (initialValue: T, f: Fn<T, T>)
+        <T,> (initHead: T, f: Fn<T, T>)
         : Stream<T> => 
             
             new Stream
             ( function* ()
             : Generator<T> 
             {
-                let value = initialValue;
+                let head = initHead;
                 while (true) 
                 {
-                    yield value ;
-                    value = f(value);
+                    yield head ;
+                    head = f(head);
                 } ;
             } ) ;
         
         
         static readonly unfold = 
-        <T, R> (initialValue: T, f: Fn<T, { mapper: R; iter: T } | undefined>)
+        <T, R> (initHead: T, f: Fn<T, { mapper: R; iter: T } | undefined>)
         : Stream<R> => 
             
             new Stream
             ( function* ()
             : Generator<R> 
             {
-                let value = initialValue;
-                let next: { mapper: R, iter: T } | undefined = f(value);
+                let head = initHead;
+                let next: { mapper: R, iter: T } | undefined = f(head);
                 
                 while (!(next === undefined)) 
                 {
                     yield next.mapper ;
                     
-                    value = next.iter;
-                    next = f(value);
+                    head = next.iter;
+                    next = f(head);
                 } ;
             } ) ;
         
@@ -200,6 +200,103 @@ namespace fp
             } ).bind(this)) ;
         
         
+        readonly scan = 
+        (f: (acc: T, x: T) => T)
+        : Stream<T> => 
+                        
+            new Stream
+            (( function* (this: Stream<T>)
+            : Generator<T> 
+            {
+                const iterator = this.generatorFunction() ;
+                const { value, done } = iterator.next();
+                
+                if (done) return;
+                let acc = value;
+                yield acc;
+                
+                while (true) 
+                {
+                    const { value, done } = iterator.next() ;
+                    if (done) break;
+                    acc = f(acc, value);
+                    yield acc;
+                } ;
+            } ).bind(this)) ;
+        
+        
+        readonly fold = 
+        (f: (acc: T, x: T) => T, initHead: T)
+        : Stream<T> => 
+                
+            new Stream
+            (( function* (this: Stream<T>)
+            : Generator<T> 
+            {
+                
+                yield initHead;            
+                yield* this.scan(f);
+                
+            } ).bind(this)) ;
+        
+        
+        readonly follow = 
+        (head: T)
+        : Stream<T> => 
+            
+            this.fold((_, x) => x, head) ;
+        
+        
+        readonly window = 
+        (size: number, step: number)
+        : Stream<T[]> => 
+            
+            new Stream
+            (( function* (this: Stream<T>)
+            : Generator<T[]> 
+            {
+                const iterator = this.generatorFunction() ;
+                let buffer: T[] = [];
+                
+                while (true) 
+                {
+                    const { value, done } = iterator.next() ;
+                    
+                    if (done) break;
+                    buffer.push(value);
+                    
+                    if (buffer.length === size) 
+                    {
+                        yield buffer;
+                        buffer = buffer.slice(step);
+                    } ;
+                } ;
+                
+            } ).bind(this));
+        
+        
+        readonly zip = 
+        <U,> (other: Stream<U>)
+        : Stream<[T, U]> => 
+            
+            new Stream
+            (( function* (this: Stream<T>)
+            : Generator<[T, U]> 
+            {
+                const iterator1 = this.generatorFunction() ;
+                const iterator2 = other.generatorFunction() ;
+                
+                while (true) 
+                {
+                    const { value: value1, done: done1 } = iterator1.next() ;
+                    const { value: value2, done: done2 } = iterator2.next() ;
+                    
+                    if (done1 || done2) break;
+                    yield [value1, value2];
+                }
+            } ).bind(this));
+        
+        
         readonly takeUntil = 
         (predicate: Fn<T, boolean>)
         : T[] => 
@@ -222,6 +319,10 @@ namespace fp
             let count = 1;
             return this.takeUntil(() => !(count++ < n));
         } ;
+        
+        
+        
+        [Symbol.iterator] = () => this.generatorFunction() ;
     } ;
     
     
@@ -480,4 +581,3 @@ namespace Demos
     
     
 } ;
-
