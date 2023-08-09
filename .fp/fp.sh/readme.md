@@ -333,7 +333,9 @@ returner='printf "%s, " "$x $y"' n=13 fib
 # --- attention: only last one is stdout, other all before it both are stderr.
 ~~~
 
+### Factorial
 
+...
 
 
 ## Why
