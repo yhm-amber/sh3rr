@@ -388,9 +388,9 @@ returner='printf "%s, " "$x $y"' n=13 fib
 
 …… 有的用起来可能就不那么舒服。它需要你明白一些 SHell 语言 **(*注意不是指 Linux 环境*)** 的基本知识 (`echo`, `eval`, `exec`, `不同的结尾符`, `只有字符串` 等等) ，并且愿意承担一部分的并不困难但很琐碎的心智负担。我明白这应该算作我的失败
 
-一个有意思的扩展阅读：
+一些有意思的扩展阅读：
 - [We all know `iter` is faster than `loop`, but why? | The Rust Programming Language Forum](https://users.rust-lang.org/t/we-all-know-iter-is-faster-than-loop-but-why)
-
+- [Common Newbie Mistakes and Bad Practices in Rust: Bad Habits · Michael-F-Bryan](https://adventures.michaelfbryan.com/posts/rust-best-practices/bad-habits)
 
 
 
