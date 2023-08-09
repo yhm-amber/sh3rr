@@ -29,13 +29,14 @@
 > 许多开发人员讨厌需求发生变化，因为他们花了很多时间来编写高性能且无错误的代码。当出现新的需求时，您必须重组代码并更新单元测试。您可以在代码库中自由移动循环吗？可能不会，因为一定有副作用或突变。出于性能原因，大循环和嵌套循环有时是不可避免的。您可以在循环中执行任何操作，包括不受控制的副作用，因此，它通常会违反[最小功率规则](https://en.wikipedia.org/wiki/Rule_of_least_power)。 Haskell 等语言使用[融合](https://stackoverflow.com/questions/38905369/what-is-fusion-in-haskell)来“合并”迭代。[全麦编程](https://www.quora.com/What-is-wholemeal-programming)是一种很好的模式，可以使代码模块化和可重用。
 > 
 
+在现实中，需求变更是不可避免的。那么，明白对方真正的（即包括可能的潜在的）需要，并能够先给出一个较高抽象的工具，然后再根据它取得更具体的工具，就是一种不错的思路。比如，一个一切皆插件的软件其实就是用统一的接口和协议把自身的原本不可拆卸的各个组成部分都变成可拆装替换的。基于高阶函数 (HOF) 构建的程序代码就合乎这样的逻辑。这应该也是 Erlang 可以几乎不出错的又一个原因 —— Erlang 就没有所谓循环，而尾调用在 Erlang 中也会看起来更清晰一些🙃（它仿佛就是 SHell 的 `exec` 或者汇编的 `GOTO` 一样）。
+
 > You can write the most performant code with loops and everything. But is it still performant when there's change of requirements? Is your performant code understandable by other people? Is your code still performant once you've refactored your code? At a larger scale, Manual optimization reduces code reusability, modularity and makes components more complex. Code becomes harder to understand, and harder to test for correctness.
 > 
 > 您可以使用循环和所有内容编写性能最高的代码。但是当需求发生变化时它仍然具有性能吗？其他人可以理解您的高性能代码吗？重构代码后，您的代码仍然具有性能吗？在更大范围内，手动优化降低了代码的可重用性和模块化程度，并使组件更加复杂。代码变得更难理解，也更难测试正确性。
 > 
 
-在现实中，需求变更是不可避免的。那么，明白对方真正的（即包括可能的潜在的）需要，并能够先给出一个较高抽象的工具，然后再根据它取得更具体的工具，就是一种不错的思路。比如，一个一切皆插件的软件其实就是用统一的接口和协议把自身的原本不可拆卸的各个组成部分都变成可拆装替换的。基于高阶函数 (HOF) 构建的程序代码就合乎这样的逻辑。这应该也是 Erlang 可以几乎不出错的又一个原因 —— Erlang 就没有所谓循环，而尾调用在 Erlang 中也会看起来更清晰一些🙃（它仿佛就是 SHell 的 `exec` 或者汇编的 `GOTO` 一样）。
-
+所以，除非真的值得这样做（比如这只是一个非常临时性的不给别人看的代码、或者循环的写法反而更有助于不论任何人的代码理解的少部分场景），否则的话，选择使用循环而不是更好的办法（应该没有比循环更差的办法了除了元编程被胡乱使用这种情况），我会将此视为一种不计代价的轻浮、愚蠢、与怠惰。
 
 引用部分来自：
 - [you-dont-need/You-Dont-Need-Loops: Avoid The One-off Problem, Infinite Loops, Statefulness and Hidden intent.][ydnl.src/gh]
