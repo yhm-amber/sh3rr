@@ -4,6 +4,8 @@
 🦪 lazy seq, memoize, tail call optimization , pipe, apply, cell, ... 👾
 ~~~
 
+函数式要素基于 TS 命令式接口的简单实现。
+
 ## usage
 
 ### `fp.memoize`
