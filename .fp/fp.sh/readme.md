@@ -12,10 +12,17 @@
 
 [ydnl.src/gh]: https://github.com/you-dont-need/You-Dont-Need-Loops.git "Avoid The One-off Problem, Infinite Loops, Statefulness and Hidden intent. // 避免一次性问题、无限循环、状态和隐藏意图。"
 
-> Loops include `for`, `forEach`, `while`, `do`, `for...of` and `for...in`. You might argue that built in array methods such as `map` or `reduce` also uses loops. Well that's true, so we are going to define our own. In real life, you’d use a library or built in array methods, but it's good to start from scratch and understand the principles. The performance won't be great, you ask. Yes I heard you, and please read on for now.
+> Loops include `for`, `forEach`, `while`, `do`, `for...of` and `for...in`. You might argue that built in array methods such as `map` or `reduce` also uses loops. Well that's true, so we are going to define our own.
 > 
-> 循环包括 `for` 、 `forEach` 、 `while` 、 `do` 、 `for...of` 和 `for...in` 。您可能会争辩说，内置数组方法（例如 `map` 或 `reduce` 也使用循环）。嗯，确实如此，所以我们将定义我们自己的。在现实生活中，您会使用库或内置数组方法，但最好从头开始并了解其原理。你可能会问，表演不会很好。是的，我听到了，请现在继续阅读。
+> 循环包括 `for` 、 `forEach` 、 `while` 、 `do` 、 `for...of` 和 `for...in` 。您可能会争辩说，内置数组方法（例如 `map` 或 `reduce` 也使用循环）。嗯，确实如此，所以我们将定义我们自己的。
 > 
+
+> Loops have four main problems: [Off-by-one error](https://en.wikipedia.org/wiki/Off-by-one_error), [Infinite loop](https://en.wikipedia.org/wiki/Infinite_loop), Statefulness and Hidden intent. You might argue loops like `for...in` won't have Off-by-one error, yes but it's still stateful and can hide intent. Recursions have some of the problems too.
+> 
+> 循环有四个主要问题：[差一错误](https://en.wikipedia.org/wiki/Off-by-one_error)、[无限循环](https://en.wikipedia.org/wiki/Infinite_loop)、有状态和隐藏意图。您可能会认为像 `for...in` 这样的循环不会出现差一错误，是的，但它仍然是有状态的并且可以隐藏意图。递归也有这里的一些问题。
+> 
+
+循环的主要问题在于 **有状态** 以及 **可以隐藏意图** 。递归只有后者，因而只是稍好一点。当然，如果是 C 那种循环的话就会有更多问题。
 
 > Many developers hate it when there's change of requirements, because they have spent so much time on writing performant and bug-free code. When there's new requirements, you'll have to restructure your code and update your unit tests. Can you move your loops freely in your codebase? probably not, because there must be side effects or mutations. Big loops and nested loops are inevitable sometimes for performance reasons. You could do anything in a loop including uncontrolled side effects and therefore, it often breaks [rule of least power](https://en.wikipedia.org/wiki/Rule_of_least_power). Languages such as Haskell uses [fusion](https://stackoverflow.com/questions/38905369/what-is-fusion-in-haskell) to "merge" iterations. [Wholemeal programming](https://www.quora.com/What-is-wholemeal-programming) is a nice pattern to make code modular and reusable.
 > 
@@ -27,7 +34,10 @@
 > 您可以使用循环和所有内容编写性能最高的代码。但是当需求发生变化时它仍然具有性能吗？其他人可以理解您的高性能代码吗？重构代码后，您的代码仍然具有性能吗？在更大范围内，手动优化降低了代码的可重用性和模块化程度，并使组件更加复杂。代码变得更难理解，也更难测试正确性。
 > 
 
-ref by: 
+在现实中，需求变更是不可避免的。那么，明白对方真正的（即包括可能的潜在的）需要，并能够先给出一个较高抽象的工具，然后再根据它取得更具体的工具，就是一种不错的思路。比如，一个一切皆插件的软件其实就是用统一的接口和协议把自身的原本不可拆卸的各个组成部分都变成可拆装替换的。基于高阶函数 (HOF) 构建的程序代码就合乎这样的逻辑。这应该也是 Erlang 可以几乎不出错的又一个原因 —— Erlang 就没有所谓循环，而尾调用在 Erlang 中也会看起来更清晰一些🙃（它仿佛就是 SHell 的 `exec` 或者汇编的 `GOTO` 一样）。
+
+
+引用部分来自：
 - [you-dont-need/You-Dont-Need-Loops: Avoid The One-off Problem, Infinite Loops, Statefulness and Hidden intent.][ydnl.src/gh]
 
 ## Aim
