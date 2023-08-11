@@ -289,6 +289,7 @@ console.log(rb(10000001,2).invoke()); // wait, out: 1
 
 `fp.memoize`: 
 - [Functional Thinking | nealford.com](https://nealford.com/books/functionalthinking.html)
+- [8.5. Memoization — OCaml Programming: Correct + Efficient + Beautiful](https://cs3110.github.io/textbook/chapters/ds/memoization.html)
 
 `fp.Pipe`: 
 - [Promise | JavaScript | MDN](https://developer.mozilla.org//docs/Web/JavaScript/Reference/Global_Objects/Promise)
