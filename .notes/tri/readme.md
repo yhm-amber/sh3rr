@@ -618,4 +618,26 @@ fibs.take(0).toList // List(): List[(Int, BigInt)]
 
 [🥗 wiki][fac.wiki:simple/wikipedia.org]
 
+## Prime
+
+[prime.wiki:simple/wikipedia.org]: https://simple.wikipedia.org/wiki/Prime_number
+[prime.wiki:zh/wikipedia.org]: https://zh.wikipedia.org/wiki/%E8%B4%A8%E6%95%B0
+[prime.wiki:en/wikipedia.org]: https://en.wikipedia.org/wiki/Prime_number
+[prime.wiki:de/wikipedia.org]: https://de.wikipedia.org/wiki/Primzahl
+
+[soe.wiki:simple/wikipedia.org]: https://simple.wikipedia.org/wiki/Sieve_of_Eratosthenes
+[soe.wiki:zh/wikipedia.org]: https://zh.wikipedia.org/wiki/%E5%9F%83%E6%8B%89%E6%89%98%E6%96%AF%E7%89%B9%E5%B0%BC%E7%AD%9B%E6%B3%95
+[soe.wiki:fr/wikipedia.org]: https://fr.wikipedia.org/wiki/Crible_d%27%C3%89ratosth%C3%A8ne
+[soe.wiki:de/wikipedia.org]: https://de.wikipedia.org/wiki/Sieb_des_Eratosthenes
+[soe.wiki:ja/wikipedia.org]: https://ja.wikipedia.org/wiki/%E3%82%A8%E3%83%A9%E3%83%88%E3%82%B9%E3%83%86%E3%83%8D%E3%82%B9%E3%81%AE%E7%AF%A9
+[soe.wiki:en/wikipedia.org]: https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes
+
+[soe.knows-by]: https://cs3110.github.io/textbook/chapters/ds/exercises.html
+
+[🥗 wiki][prime.wiki:simple/wikipedia.org] | [Sieve of Eratosthenes 🥗 wiki][soe.wiki:simple/wikipedia.org] *[🍸 Knows By CS3110][soe.knows-by]*
+
+
+
+
+
 
