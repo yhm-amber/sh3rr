@@ -2,6 +2,9 @@
 [⚗]: https://playground.functional-rewire.com
 [Elixir]: https://elixir-lang.org/getting-started/enumerables-and-streams.html
 
+[🐫]: https://try.ocamlpro.com
+[OCaml]: https://cs3110.github.io/textbook
+
 [🥑]: https://www.lua.org/demo.html
 [Lua]: https://www.lua.org/pil/11.3.html
 
