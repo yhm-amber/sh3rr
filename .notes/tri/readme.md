@@ -30,7 +30,7 @@
 [fib.wiki:fr/wikipedia.org]: https://fr.wikipedia.org/wiki/Suite_de_Fibonacci
 
 
-[🥗 wiki][fib.wiki:simple/wikipedia.org]
+[🥗 Wiki][fib.wiki:simple/wikipedia.org]
 
 ### *TL;DR*
 
@@ -616,9 +616,9 @@ fibs.take(0).toList // List(): List[(Int, BigInt)]
 [fac.wiki:en/wikipedia.org]: https://en.wikipedia.org/wiki/Factorial
 [fac.wiki:fr/wikipedia.org]: https://fr.wikipedia.org/wiki/Factorielle
 
-[🥗 wiki][fac.wiki:simple/wikipedia.org]
+[🥗 Wiki][fac.wiki:simple/wikipedia.org]
 
-## Prime
+## Prime Number
 
 [prime.wiki:simple/wikipedia.org]: https://simple.wikipedia.org/wiki/Prime_number
 [prime.wiki:zh/wikipedia.org]: https://zh.wikipedia.org/wiki/%E8%B4%A8%E6%95%B0
@@ -634,7 +634,7 @@ fibs.take(0).toList // List(): List[(Int, BigInt)]
 
 [soe.knows-by]: https://cs3110.github.io/textbook/chapters/ds/exercises.html
 
-[🥗 wiki][prime.wiki:simple/wikipedia.org] | [Sieve of Eratosthenes 🥗 wiki][soe.wiki:simple/wikipedia.org] *[🍸 Knows By CS3110][soe.knows-by]*
+[🥗 Wiki][prime.wiki:simple/wikipedia.org] | [Sieve of Eratosthenes 🥗 Wiki][soe.wiki:simple/wikipedia.org] *[🍸 Knows By CS3110][soe.knows-by]*
 
 
 
