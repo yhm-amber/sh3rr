@@ -222,25 +222,7 @@ console.log(primes.take(20)); // [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41
 ~~~
 
 - changed `t.filter(x => x % h != 0)` to `t.filter(x => x < h * h || x % h != 0)` .
-
-or primes in fibonacci: 
-
-~~~ ts
-const primesfibo = fp.Stream.unfold
-(
-    fp.Stream.iterate([0, 1], ([a, b]) => [b, a + b]).map(([x]) => x).dropUntil(x => !(x < 2)) ,
-    fibonacci => 
-    {
-        const [[h], t] = fibonacci.took(1) ;
-        return { bloom: h, iter: t.filter(x => x < h * h || x % h != 0) } ;
-    } , 
-) ;
-
-console.log(primesfibo.take(12)); // [3, 5, 8, 13, 34, 89, 233, 1597, 4181, 28657, 514229, 1346269]
-~~~
-
-- change the `Stream` define at `initHead` place of `unfold` calling.
-- attention that this stream (lazy sequence) must be **increasing** and must **begin from `2` or bigger**.
+- it is not like the `is-prime?` functions.
 
 #### more
 
