@@ -189,11 +189,61 @@ console.log(fibs.filter(({ x, y }) => x % 2 === 1).take(14) );
 console.log(fibs.take(14).filter(({ x, y }) => x % 2 === 1) );
 ~~~
 
+#### prime number
+
+~~~ ts
+const naturals = Stream.iterate(2, x => x + 1) ;
+console.log(naturals.take(8)); // [2, 3, 4, 5, 6, 7, 8, 9]
+const primes = Stream.unfold(naturals, naturals => 
+    {
+        const [[h], t] = naturals.took(1) ;
+        return { bloom: h, iter: t.filter(x => x % h != 0) }
+    } ) ;
+
+console.log(primes.take(20)); // [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71]
+~~~
+
+or better: 
+
+~~~ ts
+const primes = Stream.unfold
+(
+    Stream.iterate(2, x => x + 1) , 
+    naturals => 
+    {
+        const [[h], t] = naturals.took(1) ;
+        return { bloom: h, iter: t.filter(x => x < h * h || x % h != 0) } ;
+    } , 
+) ;
+
+console.log(primes.take(20)); // [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71]
+~~~
+
+changed `t.filter(x => x % h != 0)` to `t.filter(x => x < h * h || x % h != 0)` .
+
+or primes in fibonacci: 
+
+~~~ ts
+const primesfibo = Stream.unfold
+(
+    Stream.iterate([0, 1], ([a, b]) => [b, a + b]).map(([x]) => x).dropUntil(x => !(x < 2)) ,
+    fibonacci => 
+    {
+        const [[h], t] = fibonacci.took(1) ;
+        return { bloom: h, iter: t.filter(x => x < h * h || x % h != 0) } ;
+    } , 
+) ;
+
+console.log(primesfibo.take(12)); // [3, 5, 8, 13, 34, 89, 233, 1597, 4181, 28657, 514229, 1346269]
+~~~
+
 #### more
 
 ~~~ ts
 const fibonacci = fp.Stream.iterate([0, 1], ([a, b]) => [b, a + b]).map(([x]) => x) ;
-console.log(fibonacci.take(16)); // [0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610] 
+
+console.log(fibonacci.take(16)); // [0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610]
+console.log(fibonacci.drop(10).take(6)); // [55, 89, 144, 233, 377, 610]
 
 const fibacc_scan = fibonacci.scan((acc, x) => acc + x) ;
 console.log(fibacc_scan.take(10)); // [0, 1, 2, 4, 7, 12, 20, 33, 54, 88]
@@ -206,12 +256,15 @@ console.log(fibb.take(10)); // [777, 0, 1, 1, 2, 3, 5, 8, 13, 21]
 
 const fibh = fibonacci.follow(88).follow(99) ;
 console.log(fibh.take(10)); // [99, 88, 0, 1, 1, 2, 3, 5, 8, 13]
+console.log(fibh.drop(4).take(10)); // [1, 2, 3, 5, 8, 13, 21, 34, 55, 89]
 
 const fibw = fibonacci.window(3,2) ;
 console.log(fibw.take(5)); // [[0, 1, 1], [1, 2, 3], [3, 5, 8], [8, 13, 21], [21, 34, 55]]
+console.log(fibw.drop(2).take(3)); // [[3, 5, 8], [8, 13, 21], [21, 34, 55]]
 
 const fibz = fibonacci.zip(fibacc_scan) ;
 console.log(fibz.take(7)); // [[0, 0], [1, 1], [1, 2], [2, 4], [3, 7], [5, 12], [8, 20]]
+console.log(fibz.drop(5).take(2)); // [[5, 12], [8, 20]]
 ~~~
 
 ### `fp.TailCall`
@@ -220,6 +273,7 @@ console.log(fibz.take(7)); // [[0, 0], [1, 1], [1, 2], [2, 4], [3, 7], [5, 12], 
 
 ~~~ ts
 const factorial = 
+
 (n: number): number =>
 {
     const iter = 
@@ -256,7 +310,7 @@ console.log(rb(10000001,2).invoke()); // wait, out: 1
 
 ### How borns
 
-最开始是想用 TypeScript 演示一下[这个 TCO 方式](https://blog.knoldus.com/tail-recursion-in-java-8)的，但奈何没有现成的 `Stream` ，所以就又自己基于生成器实现了一个。测试期间发现没有很好用的管道，就也自己做了一个，然后在这个管道的实现里会用得到记忆机制，而这玩意貌似也没有现成的，就又自己实现了一个，顺便把 `apply` 也做了一个因为这样我就可以整一个有记忆的应用器从而可以将记忆机制覆盖到所有即便是已实现了的函数身上。所以我把这整个命名空间就叫 `fp` 了（也算是和[隔壁](../fp.sh)统一了形式 ……）。最后，我把写着玩的回音也整了进来，它允许你的一个模块可以像结构体（ OCaml 里管这个叫记录）一样去用。所以你现在看到了这么个东西。
+最开始是想用 TypeScript 演示一下[这个 TCO 方式](https://blog.knoldus.com/tail-recursion-in-java-8)的，但奈何没有现成的 `Stream` ，所以就又自己基于生成器实现了一个。测试期间发现没有很好用的管道，就也自己做了一个，然后在这个管道的实现里会用得到记忆机制，而这玩意貌似也没有现成的，就又自己实现了一个，顺便把 `apply` 也做了一个因为这样我就可以整一个有记忆的应用器从而可以将记忆机制覆盖到所有即便是已实现了的函数身上。所以我把这整个命名空间就叫 `fp` 了（也算是和[隔壁](../../../fp.sh)统一了形式 ……）。最后，我把写着玩的回音也整了进来，它允许你的一个模块可以像结构体（ OCaml 里管这个叫记录）一样去用。所以你现在看到了这么个东西。
 
 如果说它的存在意味着什么 …… 那就是你可以很直观地看到 *命令式风格的循环如何可以被用来模拟出函数式风格的调用接口来* 了 —— 而也因此，我并不打算让这些代码变得过于复杂难懂即便这能够增加新的功能。
 
@@ -289,7 +343,6 @@ console.log(rb(10000001,2).invoke()); // wait, out: 1
 
 `fp.memoize`: 
 - [Functional Thinking | nealford.com](https://nealford.com/books/functionalthinking.html)
-- [8.5. Memoization — OCaml Programming: Correct + Efficient + Beautiful](https://cs3110.github.io/textbook/chapters/ds/memoization.html)
 
 `fp.Pipe`: 
 - [Promise | JavaScript | MDN](https://developer.mozilla.org//docs/Web/JavaScript/Reference/Global_Objects/Promise)
