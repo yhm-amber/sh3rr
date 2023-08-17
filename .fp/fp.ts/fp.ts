@@ -272,7 +272,7 @@ namespace fp
                     } ;
                 } ;
                 
-            } ).bind(this));
+            } ).bind(this)) ;
         
         
         readonly zip = 
@@ -601,7 +601,7 @@ namespace Demos
                 
                 {
                     const [[h], t] = naturals.took(1) ;
-                    return { bloom: h, iter: t.filter(x => x % h != 0) }
+                    return { bloom: h, iter: t.filter(x => x % h != 0) } ;
                 } ) ;
             console.log(primes.take(20)); // [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71]
             
@@ -612,10 +612,23 @@ namespace Demos
                 naturals => 
                 {
                     const [[h], t] = naturals.took(1) ;
-                    return { bloom: h, iter: t.filter(x => x < h * h || x % h != 0) }
+                    return { bloom: h, iter: t.filter(x => x < h * h || x % h != 0) } ;
                 } , 
             ) ;
             console.log(primenums.take(20)); // [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71]
+            
+            // fibo
+            const primesfibo = Stream.unfold
+            (
+                Stream.iterate([0, 1], ([a, b]) => [b, a + b]).map(([x]) => x).dropUntil(x => !(x < 2)) ,
+                fibonacci => 
+                {
+                    const [[h], t] = fibonacci.took(1) ;
+                    return { bloom: h, iter: t.filter(x => x < h * h || x % h != 0) } ;
+                } , 
+            ) ;
+            
+            console.log(primesfibo.take(12)); // [3, 5, 8, 13, 34, 89, 233, 1597, 4181, 28657, 514229, 1346269]
         } ;
     } ;
     console.log(Streams.unfolds.simple.take(16) );
