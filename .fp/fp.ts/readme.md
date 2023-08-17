@@ -191,6 +191,8 @@ console.log(fibs.take(14).filter(({ x, y }) => x % 2 === 1) );
 
 #### prime number
 
+by: *[Sieve of Eratosthenes](https://simple.wikipedia.org/wiki/Sieve_of_Eratosthenes)*
+
 ~~~ ts
 const naturals = Stream.iterate(2, x => x + 1) ;
 console.log(naturals.take(8)); // [2, 3, 4, 5, 6, 7, 8, 9]
@@ -219,7 +221,7 @@ const primes = Stream.unfold
 console.log(primes.take(20)); // [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71]
 ~~~
 
-changed `t.filter(x => x % h != 0)` to `t.filter(x => x < h * h || x % h != 0)` .
+- changed `t.filter(x => x % h != 0)` to `t.filter(x => x < h * h || x % h != 0)` .
 
 or primes in fibonacci: 
 
@@ -236,6 +238,9 @@ const primesfibo = Stream.unfold
 
 console.log(primesfibo.take(12)); // [3, 5, 8, 13, 34, 89, 233, 1597, 4181, 28657, 514229, 1346269]
 ~~~
+
+- change the `Stream` define at `initHead` place of `unfold` calling.
+- attention that this stream (lazy sequence) must be **increasing** and must **begin from `2` or bigger**.
 
 #### more
 
