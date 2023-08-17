@@ -161,7 +161,7 @@ const s = fp.Stream.unfold(0, x => x < 10 ? { mapper: x, iter: x + 1 } : undefin
 console.log(s.take(3)); // out: [0, 1, 2]
 ~~~
 
-#### fib
+#### fibonacci
 
 ~~~ ts
 // unfold
@@ -194,9 +194,9 @@ console.log(fibs.take(14).filter(({ x, y }) => x % 2 === 1) );
 by: *[Sieve of Eratosthenes](https://simple.wikipedia.org/wiki/Sieve_of_Eratosthenes)*
 
 ~~~ ts
-const naturals = Stream.iterate(2, x => x + 1) ;
+const naturals = fp.Stream.iterate(2, x => x + 1) ;
 console.log(naturals.take(8)); // [2, 3, 4, 5, 6, 7, 8, 9]
-const primes = Stream.unfold(naturals, naturals => 
+const primes = fp.Stream.unfold(naturals, naturals => 
     {
         const [[h], t] = naturals.took(1) ;
         return { bloom: h, iter: t.filter(x => x % h != 0) }
@@ -208,9 +208,9 @@ console.log(primes.take(20)); // [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41
 or better: 
 
 ~~~ ts
-const primes = Stream.unfold
+const primes = fp.Stream.unfold
 (
-    Stream.iterate(2, x => x + 1) , 
+    fp.Stream.iterate(2, x => x + 1) , 
     naturals => 
     {
         const [[h], t] = naturals.took(1) ;
@@ -226,9 +226,9 @@ console.log(primes.take(20)); // [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41
 or primes in fibonacci: 
 
 ~~~ ts
-const primesfibo = Stream.unfold
+const primesfibo = fp.Stream.unfold
 (
-    Stream.iterate([0, 1], ([a, b]) => [b, a + b]).map(([x]) => x).dropUntil(x => !(x < 2)) ,
+    fp.Stream.iterate([0, 1], ([a, b]) => [b, a + b]).map(([x]) => x).dropUntil(x => !(x < 2)) ,
     fibonacci => 
     {
         const [[h], t] = fibonacci.took(1) ;
