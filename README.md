@@ -4,7 +4,7 @@
 ‘Bring the revelations from the edge of a shell .’ 🦪🦉
 ~~~
 
-The three real wepons on *SHell* : <sup><kbd><var>来自过去物质的三项启示：</var></kbd></sup>
+The three real wepons on *SHell* : <sup><kbd><var>来自“过去物质”的三项启示：</var></kbd></sup>
 
 - `exec` : *the old's end, the new's begin.* <sup><kbd><var>终结的调用 —— 清理残余的旧物并迎接新生。</var></kbd></sup>
 - `eval` : *it will write itself by itself ...* <sup><kbd><var>编程的编程 —— 生命一旦诞生就会自己找到出路。</var></kbd></sup>
