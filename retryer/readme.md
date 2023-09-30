@@ -20,3 +20,7 @@ Then, run `exec $SHELL` to refresh your environment, then it might usable.
 ~~~ sh
 ENV='WORKS () { sleep 3 ; cd $RETRIED ; }' retryer WORKS
 ~~~
+
+#### using
+
+Using `exec` to make a *tail call elimination*.
