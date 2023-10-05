@@ -3,7 +3,7 @@
 定义就这一行：
 
 ~~~ python
-echoes = lambda dict: type ('', (), dict)() ;
+echoes = lambda d: type ('', (), d) () ;
 ~~~
 
 使用：
