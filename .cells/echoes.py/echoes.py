@@ -1,4 +1,4 @@
-echoes = lambda dict: type ('', (), dict)() ;
+echoes = lambda d: type ('', (), d) () ;
 
 ####
 
