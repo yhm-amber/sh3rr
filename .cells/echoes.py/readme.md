@@ -26,4 +26,4 @@ echoes (dict (
 )) .c()() # 3
 ~~~
 
-它的关键就在 `type` 函数支持基于 dictionary 来建立具有相应 attribute 的实例。
+它的关键就在 `type` 函数支持基于 dictionary 来建立具有相应 attribute 的实例，以及 Python 的 `x.f(a)` 即 `C.f(x,a)` 的特性。
