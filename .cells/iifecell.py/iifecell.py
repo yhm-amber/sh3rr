@@ -1,4 +1,4 @@
-# Python 的 Lambda 可以展现出真正缺乏 let 语法糖支持形态下的 IIFE 。
+# Python 的 Lambda 可以展现出真正缺乏 let ... in 语法糖支持的形态下的 IIFE 。
 
 # 从字典到 x.y 的效果还是需要它来实现
 echoes = lambda d: type ('', (), d) () ;
