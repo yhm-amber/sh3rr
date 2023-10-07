@@ -24,10 +24,8 @@ x.c() ; # ~> 3
 x.b ; # !> object has no attribute 'b'
 
 
-### 之前 GPT 和我说或一种作弊手段，即海象运算符 (Walrus Operator) 。
-### 它以为这就能够让赋值动作由于是表达式而不是语句所以在 Python 反而被允许用在 Lambda 中，
-### 即便它显然是以副作用为主的。如果真是这样 Python 的 Lambda 也就并不是它要达到的那种严格了。
-### 但事实上不行。如果你像下面这样写，会报错。
+### 有一种作弊手段，即海象运算符 (Walrus Operator) 。
+### 如果你像下面这样写，会报错。
 
 xx = (
 
@@ -37,8 +35,28 @@ lambda:
     b := a + 1 ;
     c := lambda: a+b ;
     
-    echoes(dict(a=a, c=staticmethod(c) ) )
+    echoes(dict(a=a, c=staticmethod(c)))
 ) () ;
 
-### 上面就跑不完，因为你会被警告： cannot use assignment expressions with lambda 。
-### 即便把分号改成逗号假装成元组也是一样的。
+### 上面代码会被警告： cannot use assignment expressions with lambda 。
+### 似乎 Python 的闭包真的严格到以至于所有的赋值动作都不被允许。
+### 不过，倒是可以假装成元组来实现：
+
+xx = (
+
+lambda: 
+(
+    a := 1 ,
+    b := a + 1 ,
+    c := lambda: a+b ,
+    
+    echoes(dict(a=a, c=staticmethod(c))) ) [-1]
+
+) () ;
+
+xx.a ; # ~> 1
+xx.c() ; # ~> 3
+xx.b ; # !> object has no attribute 'b'
+
+### 这么看来，它还是并不那么地严谨。
+
