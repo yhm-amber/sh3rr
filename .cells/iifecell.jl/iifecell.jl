@@ -1,13 +1,13 @@
 
 x = 
-( () -> 
-begin 
+( () -> begin 
+    
     a = 1 ;
     b = a + 1 ;
-    c = (x) -> a + b - x ;
-    (a=a, c=c) 
-end )() ;
+    c = () -> a + b ;
 
-x.c(0) # ~> 3
+(a=a, c=c) end )()
+
 x.a # ~> 1
+x.c() # ~> 3
 x.b # !> ERROR: type NamedTuple has no field b
