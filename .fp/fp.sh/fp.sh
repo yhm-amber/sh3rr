@@ -1,92 +1,123 @@
 #! /bin/env sh
 
 
-fp ()
-(
+Fp ()
+{
 	
-	# Tuple -- x y < <(echo X Y)
-	# fielder=",$IFS" Tuple -- x y < <(echo XX, YY)
-	Tuple () { IFS="${fielder:-$IFS}" read -r "${@:-x}" && :; } &&
+	#. #: Using: ----
+	#. Tuple -- x y < <(echo X Y)
+	#. FIELDER=",$IFS" Tuple -- x y < <(echo XX, YY)
+	Tuple () { IFS="${FIELDER:-${IFS}}" read -r "${@:-x}" && :; } && 
 	
-	# trim $'  \n  U W U \n   \n\n ' $'  \n  U W U \n   \n\n '
-	trim () ( IFS="${TRIMMER:-${IFS}}" Tuple -d "${ender:=​}" -- s < <(echo "$@" "${ender}") && echo "$s" && : ) &&
+	#. #: Using: ----
+	#. echo  $'  \n  U W U \n  x \n\n '    $'  x\n  U W U \n   \n\n '
+	#. trim  $'  \n  U W U \n  x \n\n '    $'  x\n  U W U \n   \n\n '
+	trim () 
+	( 
+		IFS="${TRIMMER:-${IFS}}" \
+			Tuple -d "${ENDER:=​}" -- s < <(echo "$@" "${ENDER}") && 
+		echo "$s" && 
+		: ) && 
 	
-	# fp formatf "$@"
-	# formatter=' _%s' fp formatf $(seq 12)
-	# eq: seq 12 | f='printf \ _%s "$x"' fp per x
-	formatf () (printf "${formatter:-%s\n}" "$@") &&
+	#. #: Using: ----
+	#. fp formatf "$@"
+	#. FORMATTER=' _%s' fp formatf $(seq 12)
+	#. # eq: seq 12 | FN='printf \ _%s "$x"' fp per x
+	formatf () ( printf "${FORMATTER:-%s\n}" "$@" && : ) && 
 	
-	# erro echo xxx
-	# erro fp formatf "$@"
-	erro () (1>&2 "$@") &&
+	#. #: Using: ----
+	#. erro echo xxx
+	#. erro fp formatf "$@"
+	erro () ( 1>&2 "$@" && : ) && 
 	
-	iterate () (eval "$past" && while IFS="${fielder:-$IFS}" "$@" ; do eval "${iterator:-$f}" ; done && eval "$future") &&
+	iterate () 
+	( 
+		eval "$PAST" && 
+		while IFS="${FIELDER:-$IFS}" "$@" ; 
+		do eval "${ITERATOR:-$FN}" ; done && 
+		eval "$FUTURE" && 
+		: ) && 
 	
 	
-	# demos
+	#: demos
 	Iterators ()
 	{
 		
-		: fmt='%o: %o\n' n=16 fib
-		: fmt='%x: %x\n' n=16 fib
-		: mapas='"$y"' fmt='%d ' n=16 fib
+		: FMT='%o: %o\n' N=16 fib
+		: FMT='%x: %x\n' N=16 fib
+		: MAP_AS='"$y"' FMT='%d ' N=16 fib
 		
-		# use tmp asigns
+		#: use tmp asigns
 		fib () 
-		(
+		( 
 			_x=0 _y=0 _z=1 \
-			iterator='
+			ITERATOR='
 				
-				test "$x" -eq "'"${n:-13}"'" && break ; 
+				test "$x" -eq "'"${N:-13}"'" && break ; 
 				_x="$((x + 1))" _y="$((z))" _z="$((y + z))"
 				
 				' fp iterate \
 			eval '
 				
 				x="$_x" y="$_y" z="$_z" ; 
-				printf '"'${fmt:-%d: %d\\n}' ${mapas:-\"\$x\" \"\$y\"}" &&
+				printf '"'${FMT:-%d: %d\\n}' ${MAP_AS:-\"\$x\" \"\$y\"}" && 
 			
 			: ) ;
 		
-		# or use the Tuple
+		#: or use the Tuple
 		fib () 
-		(
+		( 
 			x=0 y=0 z=1 \
-			iterator='
+			ITERATOR='
 				
-				test "$x" -eq "'"${n:-13}"'" && break ; 
-				fielder=",$IFS" Tuple -- x y z < <(echo "$((x + 1)), $((z)), $((y + z))")
+				test "$x" -eq "'"${N:-13}"'" && break ; 
+				FIELDER=",$IFS" Tuple -- x y z < <(echo "$((x + 1)), $((z)), $((y + z))")
 				
 				' fp iterate \
-			eval printf "'${fmt:-%d: %d\\n}' ${mapas:-\"\$x\" \"\$y\"}" &&
+			eval printf "'${FMT:-%d: %d\\n}' ${MAP_AS:-\"\$x\" \"\$y\"}" && 
 			
 			: ) ;
 		
-		# fmt='%i %i, ' n=13 fib
-		# 0 0, 1 1, 2 1, 3 2, 4 3, 5 5, 6 8, 7 13, 8 21, 9 34, 10 55, 11 89, 12 144, 13 233, 
+		#. #: Using: ----
+		#. FMT='%i %i, ' N=13 fib
+		#. #> 0 0, 1 1, 2 1, 3 2, 4 3, 5 5, 6 8, 7 13, 8 21, 9 34, 10 55, 11 89, 12 144, 13 233, 
 		
 		:;
 		
-		"$@" &&
+		"$@" && 
 		
 		:;
 		
-	} &&
+	} && 
 	
+	#. #: Using: ----
+	#. seq 2 2 8 | cat -n | FN='echo "$x -> $y"' fp per x y
+	#. echo a,b,c:d,e,f: | FIELDER=, FN='echo "$z ~ $x -> $y"' fp per -d : -- y x z
+	#, #: ref: ----
+	#, per () ( while IFS="${FIELDER:-$IFS}" read -r "${@:-p}" ; do eval "$FN" ; done && : ) && 
+	per () ( ITERATOR="${PER:-$FN}" iterate read -r "${@:-p}" && : ) && 
 	
-	# seq 2 2 8 | cat -n | f='echo "$x -> $y"' fp per x y
-	# echo a,b,c:d,e,f: | fielder=, f='echo "$z ~ $x -> $y"' fp per -d : -- y x z
-	
-	# per () (while IFS="${fielder:-$IFS}" read -r "${@:-p}" ; do eval "$f" ; done) &&
-	per () (iterator="${p:-$f}" iterate read -r "${@:-p}") &&
-	
-	
-	# seq 7 | acc=3 f='echo $((x + acc))' fp reduce -- x
-	# echo a,b,c:d,e,f: | fielder=, acc='' f='echo "$y .. $z .. $x ~ $acc"' fp reduce -d : -- x y z
-	# echo a,b,c:d,e,f: | fielder=, acc='' f='echo "$acc: $y .. $z .. $x"' fp reduce -d : -- x y z
-	
-	# reduce () (while IFS="${fielder:-$IFS}" read -r "${@:-p}" ; do local acc="${preconcater:-${IFS: -1}}$(eval "$f")${concater:-${IFS: -1}}" ; done ; trim "$acc") &&
-	reduce () (concater="${concater:-${IFS: -1}}" preconcater="${preconcater}" acc="${preconcater}${acc}${concater}" f="$f" p='local acc="${preconcater}$(eval "$f")${concater}"' future='trim "$acc"' per "$@") &&
+	#. #: Using: ----
+	#. seq 7 | ACC=3 FN='echo $((x + ACC))' fp reduce -- x
+	#. echo a,b,c:d,e,f: | FIELDER=, ACC='' FN='echo "$y .. $z .. $x ~ $ACC"' fp reduce -d : -- x y z
+	#. echo a,b,c:d,e,f: | FIELDER=, ACC='' FN='echo "$ACC: $y .. $z .. $x"' fp reduce -d : -- x y z
+	#, #: ref: ----
+	#, reduce () 
+	#, ( 
+	#, 	while IFS="${FIELDER:-$IFS}" read -r "${@:-p}" ; 
+	#, 	do local ACC="${PRE_CONCATER:-${IFS: -1}}$(eval "$FN")${CONCATER:-${IFS: -1}}" ; done && 
+	#, 	trim "$ACC" && 
+	#, 	: ) && 
+	reduce () 
+	( 
+		CONCATER="${CONCATER:-${IFS: -1}}" \
+		PRE_CONCATER="${PRE_CONCATER}" \
+		ACC="${PRE_CONCATER}${ACC}${CONCATER}" \
+		FN="$FN" \
+		PER='local ACC="${PRE_CONCATER}$(eval "$FN")${CONCATER}"' \
+		FUTURE='trim "$ACC"' \
+			per "$@" && 
+		: ) && 
 	
 	
 	Reducers ()
@@ -94,111 +125,131 @@ fp ()
 		
 		: fib 16
 		: fib -- 2 2 32
-		: concater=':: ' fib -- 2 2 32
-		: ofs='| ' fib -- 2 2 32
+		: CONCATER=':: ' fib -- 2 2 32
+		: OFS='| ' fib -- 2 2 32
 		
-		: dont: concater=' ...' fib -- 2 2 32
-		: dont: concater=',...' fib -- 2 2 32
-		: dont: ofs=': ' concater=':...' fib -- 2 2 32
+		: dont: CONCATER=' ...' fib -- 2 2 32
+		: dont: CONCATER=',...' fib -- 2 2 32
+		: dont: OFS=': ' CONCATER=':...' fib -- 2 2 32
 		
 		fib () 
 		(
-			local ofs="${ofs:-,}" && 
+			local OFS="${OFS:-,}" && 
 			
-			acc="0${ofs} 0${ofs} 1${ofs} _" \
-			f='
+			ACC="0${OFS} 0${OFS} 1${OFS} _" \
+			FN='
 				echo "$(
 					
-					fielder="${ofs}$IFS" Tuple -d "${concater:-${IFS: -1}}" -- x y z _ < <(echo "$acc") ; 
-					echo "$((x + 1))${ofs} $((z))${ofs} $((y + z))${ofs} ${q}" &&
+					FIELDER="${OFS}$IFS" Tuple -d "${CONCATER:-${IFS: -1}}" -- x y z _ < <(echo "$ACC") ; 
+					echo "$((x + 1))${OFS} $((z))${OFS} $((y + z))${OFS} ${q}" &&
 					
-					: )${concater:-${IFS: -1}}${acc}"
+					: )${CONCATER:-${IFS: -1}}${ACC}"
 				
-				' fp reduce q < <(seq "$@") &&
+				' fp reduce q < <(seq "$@") && 
 			
 			: ) ;
 		
-		# ofs=' ' fib 13 | f='"$x $y"' fp map -- x y _ _ | tac | f='printf "%s, " "$x $y"' fp per -- x y
-		# 0 0, 1 1, 2 1, 3 2, 4 3, 5 5, 6 8, 7 13, 8 21, 9 34, 10 55, 11 89, 12 144, 13 233, 
+		#. #: Using: ----
+		#. OFS=' ' fib 13 | FN='"$x $y"' fp map -- x y _ _ | tac | FN='printf "%s, " "$x $y"' fp per -- x y
+		#. #> 0 0, 1 1, 2 1, 3 2, 4 3, 5 5, 6 8, 7 13, 8 21, 9 34, 10 55, 11 89, 12 144, 13 233, 
 		
 		:;
 		
-		"$@" &&
+		"$@" && 
 		
 		:;
-	} &&
+	} && 
 	
-	# seq 2 2 8 | cat -n | f='"$x -> $y"' fp map x y
-	# echo a,b,c:d,e,f: | fielder=, f='"$z ~ $x -> $y"' fp map -d : -- y x z
-	map () (acc='' f='printf '"'${formatter:-%s}'"' "$acc"'"$f" reduce "$@") &&
+	#. #: Using: ----
+	#. seq 2 2 8 | cat -n | FN='"$x -> $y"' fp map x y
+	#. echo a,b,c:d,e,f: | FIELDER=, FN='"$z ~ $x -> $y"' fp map -d : -- y x z
+	map () (ACC='' FN='printf '"'${FORMATTER:-%s}'"' "$ACC"'"$FN" reduce "$@") && 
 	
+	#. #: Using: ----
+	#. REPEATER=21 fp repeat AA BBB CCCC
+	#. OFS='!?::' REPEATER=5 fp repeat AA BBB CCCC
+	#. OFS=' ' CONCATER=$'\n:;;:' REPEATER=3 fp repeat AA BBB CCCC
+	repeat () (formatf "$@" | FN='"'"$(echo $(CONCATER="${OFS:-$CONCATER}" FN='"\$str"' map _ < <(seq "${REPEATER:-3}") ) )"'"' map str) && 
 	
-	# repeater=21 fp repeat AA BBB CCCC
-	# ofs='!?::' repeater=5 fp repeat AA BBB CCCC
-	# ofs=' ' concater=$'\n:;;:' repeater=3 fp repeat AA BBB CCCC
-	repeat () (formatf "$@" | f='"'"$(echo $(concater="${ofs:-$concater}" f='"\$str"' map _ < <(seq "${repeater:-3}") ) )"'"' map str) &&
-	
-	# n=13 initer='0 0 1' init='Tuple -- x y z < <(echo "$initer") && echo "$x $y $z"' unfolder=' { Tuple -- x y z < <(echo "$((x + 1)) $((z)) $((y + z))") && echo "$x $y $z" ; } ' folder='echo "${acc} ${processes}"' delimiter=' &&' fp unfold eval 'eval "$(cat -) :"'
-	unfold () (seq -- "${n:-13}" | f="'$unfolder'" map _ | acc="$init" concater="${delimiter:-$concater}" f="${folder:-echo \"\$acc \$processes\"}" reduce -- processes | initer="$initer" "$@") &&
+	#. #: Using: ----
+	#. N=13 INITOR='0 0 1' \
+	#. INIT='Tuple -- x y z < <(echo "$INITOR") && echo "$x $y $z"' \
+	#. UNFOLDER=' { Tuple -- x y z < <(echo "$((x + 1)) $((z)) $((y + z))") && echo "$x $y $z" ; } ' \
+	#. FOLDER='echo "${ACC} ${processes}"' \
+	#. DELIMITER=' &&' \
+	#. 	fp unfold eval 'eval "$(cat -) :"'
+	unfold () (
+		seq -- "${N:-13}" | 
+			FN="'$UNFOLDER'" map _ | 
+			ACC="$INIT" CONCATER="${DELIMITER:-$CONCATER}" FN="${FOLDER:-echo \"\$ACC \$processes\"}" reduce -- processes | 
+			INITOR="$INITOR" "$@" && 
+		: ) && 
 	
 	UnFolders ()
 	{
 		
-		# seq 13 |
-		#     
-		#     f="'"' { Tuple -- x y z < <(echo "$((x + 1)) $((z)) $((y + z))") && echo "$x $y $z" ; } '"'" fp map _ |
-		#     acc='Tuple -- x y z < <(echo "$init") && echo "$x $y $z"' f='echo "${acc} ${processes}"' concater=' &&' fp reduce -- processes |
-		#     init='0 0 1' eval "$(cat -) :"
+		#, #: ref: ----
+		#, seq 13 | 
+		#, 	
+		#, 	FN="'"' { Tuple -- x y z < <(echo "$((x + 1)) $((z)) $((y + z))") && echo "$x $y $z" ; } '"'" fp map _ | 
+		#, 	ACC='Tuple -- x y z < <(echo "$initor") && echo "$x $y $z"' FN='echo "${ACC} ${processes}"' CONCATER=' &&' fp reduce -- processes | 
+		#, 	initor='0 0 1' eval "$(cat -) :"
 		
-		: echoer='printf "%s, " "$x $y"' n=16 fib
-		
-		fib ()
-		(
-			n="${n}" echoer="${echoer:-echo \"\$x \$y \$z\"}" \
-			init='Tuple -- x y z < <(echo "$initer") && '"$echoer" \
-			unfolder=' { Tuple -- x y z < <(echo "$((x + 1)) $((z)) $((y + z))") && '"$echoer"' ; } ' \
-			folder='echo "${acc} ${processes}"' delimiter=' &&' \
-			initer='0 0 1' fp unfold eval 'eval "$(cat -) :"' &&
-			
-			: ) ;
-		
-		# echoer='printf "%s, " "$x $y"' n=13 fib
-		# 0 0, 1 1, 2 1, 3 2, 4 3, 5 5, 6 8, 7 13, 8 21, 9 34, 10 55, 11 89, 12 144, 13 233, 
-		
-		
-		# or you wana direct ? then you need a folder by yourself, with your unfolder.
-		
-		# seq 13 |
-		#     f="'"' { Tuple -- x y z < <(echo "$((x + 1)) $((z)) $((y + z))") && echo "$x $y $z" ; } '"'" fp map _ |
-		#     acc='0 0 1' f='Tuple -- x y z < <(echo "$acc") && erro echo "$x $y $z" && eval "$processes"' fp reduce -- processes
+		: ECHOER='printf "%s, " "$x $y"' N=16 fib
 		
 		fib ()
 		(
-			n="${n}" echoer='echo "$x $y $z"' init='0 0 1' returner="${returner:-$echoer}" \
-			unfolder=' { Tuple -- x y z < <(echo "$((x + 1)) $((z)) $((y + z))") && '"$echoer"' ; } ' \
-			folder='Tuple -- x y z < <(echo "$acc") && erro '"$returner"' && eval "$processes"' \
-			fp unfold cat - | f="$returner" fp per -- x y z &&
+			N="${N}" ECHOER="${ECHOER:-echo \"\$x \$y \$z\"}" \
+			INIT='Tuple -- x y z < <(echo "$INITOR") && '"$ECHOER" \
+			UNFOLDER=' { Tuple -- x y z < <(echo "$((x + 1)) $((z)) $((y + z))") && '"$ECHOER"' ; } ' \
+			FOLDER='echo "${ACC} ${processes}"' DELIMITER=' &&' \
+			INITOR='0 0 1' \
+				fp unfold eval 'eval "$(cat -) :"' && 
 			
 			: ) ;
 		
-		# returner='printf "%s, " "$x $y"' n=13 fib
-		# 0 0, 1 1, 2 1, 3 2, 4 3, 5 5, 6 8, 7 13, 8 21, 9 34, 10 55, 11 89, 12 144, 13 233, 
+		#. #: Using: ----
+		#. ECHOER='printf "%s, " "$x $y"' N=13 fib
+		#. #> 0 0, 1 1, 2 1, 3 2, 4 3, 5 5, 6 8, 7 13, 8 21, 9 34, 10 55, 11 89, 12 144, 13 233, 
 		
-		# attention: only last one is stdout, other all before it both are stderr.
+		
+		#: or you wana direct ? then you need a folder by yourself, with your unfolder.
+		
+		#, #: ref: ----
+		#, seq 13 |
+		#, 	FN="'"' { Tuple -- x y z < <(echo "$((x + 1)) $((z)) $((y + z))") && echo "$x $y $z" ; } '"'" fp map _ |
+		#, 	ACC='0 0 1' FN='Tuple -- x y z < <(echo "$ACC") && erro echo "$x $y $z" && eval "$processes"' fp reduce -- processes
+		
+		fib ()
+		(
+			N="${N}" echoer='echo "$x $y $z"' INIT='0 0 1' RETURNER="${RETURNER:-$echoer}" \
+			UNFOLDER=' { Tuple -- x y z < <(echo "$((x + 1)) $((z)) $((y + z))") && '"$echoer"' ; } ' \
+			FOLDER='Tuple -- x y z < <(echo "$ACC") && erro '"$RETURNER"' && eval "$processes"' \
+				fp unfold cat - | FN="$RETURNER" fp per -- x y z && 
+			
+			: ) ;
+		
+		#. #: Using: ----
+		#. RETURNER='printf "%s, " "$x $y"' N=13 fib
+		#. #> 0 0, 1 1, 2 1, 3 2, 4 3, 5 5, 6 8, 7 13, 8 21, 9 34, 10 55, 11 89, 12 144, 13 233, 
+		
+		#: attention: only last one is stdout, other all before it both are stderr.
 		
 		
 		:;
 		
-		"$@" &&
+		"$@" && 
 		
 		:;
 		
-	} &&
+	} && 
 	
-	"$@" &&
+	"$@" && 
 	
-	: ) &&
+	:;
+} && 
 
+fp () ( Fp "$@" && : ) && 
 
 : \
 fp "$@"
