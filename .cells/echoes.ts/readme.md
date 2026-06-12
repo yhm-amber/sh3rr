@@ -6,6 +6,8 @@
 
 *“回声”*
 
+[Play](https://www.typescriptlang.org/play/?#code/FAehAJABSTwEwUwGYEsB28rS9nu-+mFQEMBbeAZwAdiBjDAUVoAsB7S4Ab2AEh4APKqwBOAF3C9arVBXHwW7CuAC8EngB4AKivCcA2gGt4ATwBc4WcLQBzALrniqYwF8ANAD5wACgDuxAG6U5vpGZhaiVqh25l7wqP7mmgCUKp6OLkm8ialqPADyAEYAVvKiAHRxEciUvgGUSWXC8LAArvS8PF4dnXH+FK7geoioA4i2KcqeXpxls+C9-YPD9uCIsfEUSc4prt2czuDESpodKQDcvLwCQmJqUjLitMQANs86vFrz-KJxsEoASvIRLB1ABpAZeWZlYjCawUBxOCZpJzuAagr4-VB-cChViIcCaTy8LysYqJAahcygpLBQYABXAaHAoJWgNELWEqE0xio8C0ejptncZ3Azj0LJyHXkbEo6n0DKZLPMbI5XJ5fM0AqFzncJOKSUMJls4AuPGABwuwFAEGgcHgpFYmAIzpd+GA91k83iAH1EPjVFxeIgAIwxXq0w1hSw2FYAMRaqFoomQ0lFSNyHS8qHMqBapAK8GENPAufzhZywfAAGoS+BdmaeIgAExh+IRynhSLRcDxxPJ1PbSU8Budfg5vMFovjsvCHK9Mohrz8cAAKnATZ2lwt1sw8z9pSdrqPzvd0gorGe8DKz1Y1i84CYMooFQUNV6vsQDWbXgAzCkkiKYCeAA7FaVpgLuCAOoex6wXgp4PF6-jevwy4BtwPD8AADK2CS6IMHbRlEKzpGmQ4jpW9ZBrh7YmOYRHdqRg6TBmw5ePCnY2Jkw7TpOOTPpeUSiMwdaXI2LbeOG+GRvRVTEQixhkSxHSZhxDEDNmJYToW3E8OYdLCKwpDIBQfKlpOngsQZRkmVeTTns8gTrP4C7sSkNaoOAAC0SFlNhm7bjutpIIgB5weFODAI+igvk+crNsq8Dspy3K8uoojqniSEofwC5Nu4OrOTlX5Nl4ADkxBla4f5lMJcReLOLEeheV43neRYAeAQHgD+UWvs+0qKEVqEleVlXVQ0dWoPeDW8TpOTNZe163g1-6ASAni9dFlBlE8rzDfwrhlc2ZVJGNVU1VNDULWeLXLe1SSdd1vXAEAA "Playground")
+
 ## 简述
 
 这是一个高度抽象的依赖关联器，为结构体中的各个属性之间依赖关系的建立提供了一种途径。
@@ -17,19 +19,19 @@
 ~~~ tsx
 namespace Echoes
 {
-    export 
-    const echoes =
-    <T = {[key: string]: any},> (waves: {[key: string]: (env: T) => any})
-    : T =>
-        Object.entries(waves).reduce
-        ( (envs, [fn, f]) => ({... envs, [fn]: f(envs)}), {} as T ) ;
-    
-    export 
-    const call = 
-    <T extends Record<K, (...args: any) => any>, K extends keyof T>
-    (obj: T, key: K): { [P in K]: ReturnType<T[P]>; }[K] =>
-        echoes<{[P in K]: ReturnType<T[P]>}>(obj)[key] ;
-    
+	export 
+	const echoes = 
+	<T = {[key: string]: any},> (waves: {[key: string]: (env: T) => any})
+	: T => 
+		Object.entries(waves).reduce
+		( (envs, [fn, f]) => ({... envs, [fn]: f(envs)}) ,{} as T ) ;
+	
+	export 
+	const call = 
+	<T extends Record<K, (...args: any) => any>, K extends keyof T> 
+	(obj: T, key: K): { [P in K]: ReturnType<T[P]>; }[K] => 
+		echoes<{[P in K]: ReturnType<T[P]>}>(obj)[key] ;
+	
 } ;
 ~~~
 
@@ -48,19 +50,20 @@ namespace Echoes
 简单例：
 
 ~~~ tsx
-const ffs =
+// ── demo ────────────────────────────────────────
+const env_ff = 
 {
-    f1: (env: { [key: string]: Function }) => 
-        
-        (n: number): number => 1 + n ,
-    
-    f2: (env: { [key: string]: Function }) => 
-        
-        (x: number): number => env.f1(x * 2) ,
-    
+	f1: (env: { [key: string]: Function }) => 
+		
+		(n: number): number => 1 + n ,
+	
+	f2: (env: { [key: string]: Function }) => 
+		
+		(x: number): number => env.f1(x * 2) ,
+	
 } ;
-
-console.log( Echoes.echoes(ffs).f2(3) ); // 结果为 7
+// ── effect ──────────────────────────────────────
+console.log( Echoes.echoes(env_ff).f2(3) ); //> 7
 ~~~
 
 其中的 `(env: { [key: string]: Function }) =>` 是必要的部分。没有这个变量，就不能描述属性之间的依赖关系。
@@ -70,42 +73,37 @@ console.log( Echoes.echoes(ffs).f2(3) ); // 结果为 7
 ~~~ tsx
 /* structorized namespace */
 
-const xx =
+const env_xx = 
 {
-    x0: (env: { [key: string]: any }) => 
-        
-        1 ,
-    
-    f: (env: { [key: string]: any }) => 
-        
-        (s: string)
-        : number => 
-            s.length ,
-    
-    f2: (env: { [key: string]: any }) => 
-        
-        (s: string, n: number)
-        : Promise<number> => 
-            Promise.resolve(env.f(s) + n - env.x0) ,
+	x0: (env: { [key: string]: any }) => 
+		
+		1 ,
+	
+	f: (env: { [key: string]: any }) => 
+		
+		(s: string)
+		: number => s.length ,
+	
+	f2: (env: { [key: string]: any }) => 
+		
+		(s: string, n: number)
+		: Promise<number> => Promise.resolve(env.f(s) + n - env.x0) ,
 } ;
 
 
 /* use */
 
 Echoes
-    .echoes<{f2: ReturnType<typeof xx.f2>}>(xx).f2('aa',3)
-    .then(r => console.log(r));
-    // 结果为 4
+	.echoes<{f2: ReturnType<typeof env_xx.f2>}>(env_xx).f2('a',3)
+	.then(r => console.log(r)); //> 3
 
 Echoes
-    .echoes(xx).f2('aaa',3)
-    .then( (r: number) => console.log(r) );
-    // 结果为 5
+	.echoes(env_xx).f2('a',3)
+	.then( (r: number) => console.log(r) ); //> 3
 
 Echoes
-    .call(xx,'f2')('a',3)
-    .then(r => console.log(r));
-    // 结果为 3
+	.call(env_xx,'f2')('a',3)
+	.then(r => console.log(r)); //> 3
 
 ~~~
 
@@ -150,47 +148,47 @@ f len: (1) | {...} len: (^Acc): 31      | {{...},f} len: (Env + Elm): 32      | 
 
 ~~~ erlang
 CalcuLen = fun
-(N, Elm) ->
-
-    Ecaf = fun
-    (Env) -> 
-        
-        Clu = Env + Elm ,
-        Acc = Env + Clu ,
-        {Elm, Env, Clu, Acc} end
-    
-    , Iter = fun
-    (_, {1, Res}, _) -> Res ;
-    ({_, _, _, Env}, {N,R}, F) -> 
-        
-        Eca = Ecaf (Env) ,
-        F (Ecaf (Env), {N-1, [Ecaf (Env) |R]}, F) end
-    
-    , Eca = Ecaf (0)
-    , Iter (Eca, {N, [Eca]}, Iter) end .
+(N, Elem) ->
+	
+	Ecaf = fun
+	(Env) -> 
+		
+		Clu = Env + Elem ,
+		Acc = Env + Clu ,
+		{Elem, Env, Clu, Acc} end , 
+	
+	Iter = fun
+	(_, { 1, Res }, _) -> Res ;
+	({ _, _, _, Env }, { N, R }, F) -> 
+		
+		Eca = Ecaf (Env) ,
+		F (Ecaf (Env), { N - 1, [Ecaf (Env) | R] }, F) end , 
+	
+	Eca = Ecaf (0) , 
+	Iter (Eca, { N, [Eca] }, Iter) end .
 ~~~
 
 或者用 `fold` 也可以做这件事：
 
 ~~~ erlang
 CalcuLen = fun
-(N, Elm) ->
-    
-    Ecaf = fun
-    (Env) ->
-        
-        Clu = Env + Elm ,
-        Acc = Env + Clu ,
-        {Elm, Env, Clu, Acc} end
-
-    , lists:foldl
-    (
-        fun 
-        (_, R) -> 
-            [{_, _, _, Env} |_] = R
-            , [Ecaf (Env) |R] end
-        , [Ecaf (0)], lists:seq(1, N-1)
-    ) end .
+(N, Elem) ->
+	
+	Ecaf = fun
+	(Env) ->
+		
+		Clu = Env + Elem ,
+		Acc = Env + Clu ,
+		{ Elem, Env, Clu, Acc } end , 
+	
+	lists:foldl
+	(
+		fun 
+		(_, R) -> 
+			[{ _, _, _, Env } | _] = R
+			, [Ecaf (Env) | R] end
+		, [Ecaf (0)], lists:seq(1, N-1)
+	) end .
 ~~~
 
 在调用 `CalcuLen (6, 1) .` 后会得到这样的输出：
@@ -235,12 +233,18 @@ CalcuLen = fun
 ~~~ sh
 NS0 () 
 ( 
-    NS1 () 
-    ( 
-        somefun () { ... ; } &&
-        
-    "$@" ) &&
-"$@" )
+	NS1 () 
+	( 
+		somefun () { ... ; } && 
+		... && 
+		
+		"$@" && 
+		: ) && 
+	
+	... && 
+	
+	"$@" && 
+	: )
 ~~~
 
 它会提供类似于子命令一样的效果，就像这样： `NS0 NS1 somefun args...` 。
